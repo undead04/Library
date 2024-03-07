@@ -32,7 +32,8 @@ namespace Library.Server
             {
                 return string.Empty;
             }
-            bool isRole = await userManager.IsInRoleAsync(user, model.Role);
+
+            bool isRole = user.RoleId == model.RoleId;
             if (!result.Succeeded||!isRole||user==null)
             {
                 return string.Empty;
@@ -60,33 +61,6 @@ namespace Library.Server
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<IdentityResult> SignUpAsync(SignInModel model)
-        {
-            var user = new ApplicationUser
-            {
-                
-                Email = model.Email,
-                UserName = model.Email
-            };
-
-            var result = await userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                //kiểm tra role Customer đã có
-                if (!await roleManager.RoleExistsAsync(model.Role))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(model.Role));
-                }
-                user.PhoneNumber = "0395758409";
-                user.MaUser = "GV01";
-                user.Sex = "name";
-                user.Address = "Bui quang la";
-
-                await userManager.AddToRoleAsync(user,model.Role);
-                
-            }
-            return result;
-        }
+        
     }
 }

@@ -54,14 +54,6 @@ namespace Library.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("MaUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Majors")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -79,6 +71,9 @@ namespace Library.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -88,6 +83,10 @@ namespace Library.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<string>("UserCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -103,7 +102,322 @@ namespace Library.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Library.Data.Approve", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DocumentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReponseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReponseUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentId")
+                        .IsUnique();
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("approves");
+                });
+
+            modelBuilder.Entity("Library.Data.ClassRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CodeClassRoom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("classRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.Document", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Classify")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Create_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("documents");
+                });
+
+            modelBuilder.Entity("Library.Data.Lesson", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DoucumentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoucumentId");
+
+                    b.HasIndex("TopicId");
+
+                    b.ToTable("lessons");
+                });
+
+            modelBuilder.Entity("Library.Data.Major", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("majors");
+                });
+
+            modelBuilder.Entity("Library.Data.Resources", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DoucmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoucmentId");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("resources");
+                });
+
+            modelBuilder.Entity("Library.Data.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Create_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("roles");
+                });
+
+            modelBuilder.Entity("Library.Data.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClassRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MajorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassRoomId");
+
+                    b.HasIndex("MajorId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("students");
+                });
+
+            modelBuilder.Entity("Library.Data.Subject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Describe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubjectCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("subjects");
+                });
+
+            modelBuilder.Entity("Library.Data.SubjectClassRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClassRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TearcherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassRoomId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TearcherId");
+
+                    b.ToTable("subjectClassRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.Tearcher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("MajorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MajorId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("tearchers");
+                });
+
+            modelBuilder.Entity("Library.Data.Topic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("topics");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -239,6 +553,167 @@ namespace Library.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Library.Data.ApplicationUser", b =>
+                {
+                    b.HasOne("Library.Data.Role", "Role")
+                        .WithMany("User")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Library.Data.Approve", b =>
+                {
+                    b.HasOne("Library.Data.Document", "document")
+                        .WithOne("Approve")
+                        .HasForeignKey("Library.Data.Approve", "DocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.ApplicationUser", "user")
+                        .WithMany("Approves")
+                        .HasForeignKey("userId");
+
+                    b.Navigation("document");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("Library.Data.Document", b =>
+                {
+                    b.HasOne("Library.Data.Subject", "subject")
+                        .WithMany("documents")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("subject");
+                });
+
+            modelBuilder.Entity("Library.Data.Lesson", b =>
+                {
+                    b.HasOne("Library.Data.Document", "Document")
+                        .WithMany("lessons")
+                        .HasForeignKey("DoucumentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Topic", "topic")
+                        .WithMany("lessons")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Document");
+
+                    b.Navigation("topic");
+                });
+
+            modelBuilder.Entity("Library.Data.Resources", b =>
+                {
+                    b.HasOne("Library.Data.Document", "Document")
+                        .WithMany("resources")
+                        .HasForeignKey("DoucmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Lesson", "Lesson")
+                        .WithMany("Resources")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Document");
+
+                    b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("Library.Data.Student", b =>
+                {
+                    b.HasOne("Library.Data.ClassRoom", "classRoom")
+                        .WithMany("students")
+                        .HasForeignKey("ClassRoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Major", "major")
+                        .WithMany("students")
+                        .HasForeignKey("MajorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.ApplicationUser", "user")
+                        .WithOne("Student")
+                        .HasForeignKey("Library.Data.Student", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("classRoom");
+
+                    b.Navigation("major");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("Library.Data.SubjectClassRoom", b =>
+                {
+                    b.HasOne("Library.Data.ClassRoom", "ClassRoom")
+                        .WithMany("subjectClassRooms")
+                        .HasForeignKey("ClassRoomId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Subject", "Subject")
+                        .WithMany("subjectClassRooms")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Tearcher", "Tearcher")
+                        .WithMany("subjectClassRooms")
+                        .HasForeignKey("TearcherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ClassRoom");
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("Tearcher");
+                });
+
+            modelBuilder.Entity("Library.Data.Tearcher", b =>
+                {
+                    b.HasOne("Library.Data.Major", "major")
+                        .WithMany("tearchers")
+                        .HasForeignKey("MajorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.ApplicationUser", "user")
+                        .WithOne("Tearcher")
+                        .HasForeignKey("Library.Data.Tearcher", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("major");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("Library.Data.Topic", b =>
+                {
+                    b.HasOne("Library.Data.Subject", "Subject")
+                        .WithMany("topics")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -288,6 +763,67 @@ namespace Library.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Library.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("Approves");
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Tearcher");
+                });
+
+            modelBuilder.Entity("Library.Data.ClassRoom", b =>
+                {
+                    b.Navigation("students");
+
+                    b.Navigation("subjectClassRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.Document", b =>
+                {
+                    b.Navigation("Approve");
+
+                    b.Navigation("lessons");
+
+                    b.Navigation("resources");
+                });
+
+            modelBuilder.Entity("Library.Data.Lesson", b =>
+                {
+                    b.Navigation("Resources");
+                });
+
+            modelBuilder.Entity("Library.Data.Major", b =>
+                {
+                    b.Navigation("students");
+
+                    b.Navigation("tearchers");
+                });
+
+            modelBuilder.Entity("Library.Data.Role", b =>
+                {
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Library.Data.Subject", b =>
+                {
+                    b.Navigation("documents");
+
+                    b.Navigation("subjectClassRooms");
+
+                    b.Navigation("topics");
+                });
+
+            modelBuilder.Entity("Library.Data.Tearcher", b =>
+                {
+                    b.Navigation("subjectClassRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.Topic", b =>
+                {
+                    b.Navigation("lessons");
                 });
 #pragma warning restore 612, 618
         }

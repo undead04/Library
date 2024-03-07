@@ -2,9 +2,9 @@
 {
     public class AppRole
     {
-        public const string Leader = "leader";
-        public const string Student = "student";
-        public const string Teacher = "teacher";
+        public const string Leader = "Quản lý";
+        public const string Student = "Học viên";
+        public const string Teacher = "Giảng viên";
         public string[] ArrayRole()
         {
             return new string[] { Leader, Student,Teacher };

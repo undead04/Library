@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "c71lgYWKiTysJukQ+8lYigPxOglEmZGwkZ1+GJZ8NgMyKTIdMfJVYU0Byc8qa4rWKpQhAEID66/4Q8sLfLRuew==",
+  "dgSpecHash": "yFby6plv30l1zEq4TY/UPP/QkGRToIy3fIJZjqI+lf4LCCSPuv0tehSKlUH+Oq/+pLzvFLhNjoKWxJaqybdPtQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\Library.csproj",
   "expectedPackageFiles": [
@@ -46,6 +46,7 @@
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\mimekit\\4.4.0\\mimekit.4.4.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\mimemapping\\3.0.1\\mimemapping.3.0.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",

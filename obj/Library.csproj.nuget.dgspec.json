@@ -71,6 +71,10 @@
               "target": "Package",
               "version": "[4.4.0, )"
             },
+            "MimeMapping": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"

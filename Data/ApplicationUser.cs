@@ -7,7 +7,14 @@ namespace Library.Data
         public byte[]? Avatar { get; set; }
         public string Sex { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public string MaUser { get; set; } = string.Empty;
-        public string Majors { get; set; } = string.Empty;
+        public string UserCode { get; set; } = string.Empty;
+       
+        public int RoleId { get; set; }
+      
+        public virtual Role? Role { get; set; }
+        public ICollection<Approve>? Approves { get;set; }
+        public virtual Student? Student { get; set; }
+        public virtual Tearcher? Tearcher { get; set; }
+       
     }
 }

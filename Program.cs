@@ -4,6 +4,7 @@ using Library.Model;
 using Library.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -66,7 +67,13 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddScoped<IReissuePassword, ReissuePasswordReponsitory>();
 builder.Services.AddScoped<IUserReponsitory, UserReponsitory>();
-
+builder.Services.AddScoped<IRoleReponsitory, RoleReponsitory>();
+builder.Services.AddScoped<ISubjectReponsitory, SubjectReponsitory>();
+builder.Services.AddScoped<ITopicReponsitory, TopicReponsitory>();
+builder.Services.AddScoped<ILessonReponsitory, LessonReponsitory>();
+builder.Services.AddScoped<IClassReponsitory,ClassReponsitory>();
+builder.Services.AddScoped<IMajorReponsitory, MajorReponsitory>();
+builder.Services.AddScoped<IDocumentReponsitory, DocumentReponsitory>();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -83,7 +90,10 @@ builder.Services.AddAuthentication(options => {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
     };
 });
-
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 var app = builder.Build();
 

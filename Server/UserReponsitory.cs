@@ -1,5 +1,7 @@
 ﻿using Library.Data;
+using Library.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SchoolLibrary.DTO;
 using SchoolLibrary.Model;
 using System.Security.Claims;
@@ -33,11 +35,10 @@ namespace SchoolLibrary.Server
             {
                 Email = email,
                 UserName = user.UserName,
-                CodeUser = user.MaUser,
+                CodeUser = user.UserCode,
                 Sex = user.Sex,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-              
                 Avatar = user.Avatar==null?string.Empty:Convert.ToBase64String(user.Avatar),
             };
         }
@@ -75,6 +76,127 @@ namespace SchoolLibrary.Server
                 user.Avatar = null;
                 await userManager.UpdateAsync(user);
             }
+        }
+        public async Task<List<UserDTO>> GetAllUser()
+        {
+            var users = await userManager.Users.ToListAsync();
+            return users.Select(user=> new UserDTO
+            {
+                Id=user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                CodeUser = user.UserCode,
+                Sex = user.Sex,
+                Phone = user.PhoneNumber,
+                Address = user.Address,
+                Avatar = user.Avatar == null ? string.Empty : Convert.ToBase64String(user.Avatar),
+            }).ToList();
+        }
+        public async Task DeleteUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user!=null)
+            {
+                await userManager.DeleteAsync(user);
+            }
+        }
+        public async Task<UserDTO> GetUserById(string id)
+        {
+            var user=await userManager.FindByIdAsync(id);
+            if(user==null)
+            {
+                return null;
+            }
+            return new UserDTO
+            {
+                Id=user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                CodeUser = user.UserCode,
+                Sex = user.Sex,
+                Phone = user.PhoneNumber,
+                Address = user.Address,
+                Avatar = user.Avatar == null ? string.Empty : Convert.ToBase64String(user.Avatar),
+            };
+        }
+        public async Task CreateUser(SingnUpModel model)
+        {
+            var user = new ApplicationUser
+            {
+                Email = model.Email,
+                UserName = model.UserName,
+                UserCode = model.UserCode,
+                Sex = model.Sex,
+                PhoneNumber = model.Phone,
+                Address = model.Address,
+                RoleId = model.RoleId,
+               
+            };
+            
+            var result = await userManager.CreateAsync(user, "GH56bn*&");
+            var role = await context.roles.FirstOrDefaultAsync(ro => ro.Id == model.RoleId);
+            switch (role!.Name)
+            {
+                case AppRole.Student:
+                    var student = new Student
+                    {
+                        UserId = user.Id,
+                        ClassRoomId=model.ClassRoomId,
+                        MajorId=model.MajorsId
+                    };
+                    await context.students.AddAsync(student);
+                    await context.SaveChangesAsync();
+                   
+                    break;
+                
+                case AppRole.Teacher:
+                    var tearcher = new Tearcher
+                    {
+                        UserId = user.Id,
+                        MajorId = model.MajorsId,
+                    };
+                    await context.tearchers.AddAsync(tearcher);
+                    await context.SaveChangesAsync();
+                    break;
+            }
+
+
+        }
+        public async Task UpdateUser(string Id, SingnUpModel model)
+        {
+            var user =await userManager.FindByIdAsync(Id);
+            if(user!=null)
+            {
+                user.RoleId = model.RoleId;
+                await userManager.UpdateAsync(user);
+            }
+
+
+        }
+        public async Task<List<UserDTO>> Search(string search, int[] RoleId)
+        {
+            var user = await userManager.Users.ToListAsync();
+            if (!string.IsNullOrEmpty(search))
+            {
+                user=user.Where(us=>us.UserCode.Contains(search)||us.Email.Contains(search)||us.UserName.Contains(search)).ToList();
+            }
+            if(RoleId!=null)
+            {
+                foreach(var role in RoleId)
+                {
+                    user = user.Where(us => us.RoleId == role).ToList();
+                }
+            }
+            return user.Select(user => new UserDTO
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                CodeUser = user.UserCode,
+                Sex = user.Sex,
+                Phone = user.PhoneNumber,
+                Address = user.Address,
+            }).ToList();
         }
     }
 }

@@ -21,24 +21,7 @@ namespace Library.Controllers
            
         }
 
-        [HttpPost("SignUp")]
-        public async Task<IActionResult> SignUp(SignInModel signUpModel)
-        {
-            try
-            {
-                var result = await accountRepo.SignUpAsync(signUpModel);
-                if (result.Succeeded)
-                {
-                    return Ok(result.Succeeded);
-                }
-                return BadRequest();
-                
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
+       
 
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn(SignInModel signInModel)
