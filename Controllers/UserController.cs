@@ -1,11 +1,9 @@
 ﻿using FluentValidation.Results;
+using Library.DTO;
 using Library.Model;
+using Library.Server.UserReponsitory;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
-using SchoolLibrary.Model;
-using SchoolLibrary.Server;
 using SchoolLibrary.Validation;
 
 namespace Library.Controllers
@@ -167,8 +165,21 @@ namespace Library.Controllers
             try
             {
 
-                var user= await userReponsitory.Search(search,RoleId);
+                var user = await userReponsitory.Search(search, RoleId);
                 return Ok(BaseReponsitory<List<UserDTO>>.WithData(user, 200));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("tearchSubject/{Id}")]
+        public async Task<IActionResult> GetAllTearcherSubject(string Id)
+        {
+            try
+            {
+                var subjects= await userReponsitory.GetTearcherSubject(Id);
+                return Ok(BaseReponsitory<List<SubjectDTO>>.WithData(subjects, 200));
             }
             catch
             {

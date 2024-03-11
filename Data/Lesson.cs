@@ -9,5 +9,6 @@
         public virtual Topic? topic { get; set; }
         public ICollection<Resources>? Resources { get; set; }
         public virtual Document? Document { get; set; }
+        public ICollection<QuestionSubject>? questionSubjects { get; set; }
     }
 }

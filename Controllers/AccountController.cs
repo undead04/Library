@@ -1,10 +1,10 @@
 ﻿using Library.Data;
-
-using Library.Server;
-using Microsoft.AspNetCore.Authorization;
+using Library.DTO;
+using Library.Model;
+using Library.Server.AccountReponsitory;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
-using SchoolLibrary.Model;
+
+
 
 namespace Library.Controllers
 {

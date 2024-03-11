@@ -1,9 +1,9 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server;
-using Microsoft.AspNetCore.Http;
+using Library.Server.SubjectReponsitory;
+using Library.Server.TopicReponsitory;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
+
 
 namespace Library.Controllers
 {

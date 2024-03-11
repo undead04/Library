@@ -1,4 +1,4 @@
-﻿namespace SchoolLibrary.DTO
+﻿namespace Library.DTO
 {
     public class BaseReponsitory<T>
     {

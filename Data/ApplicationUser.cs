@@ -8,13 +8,14 @@ namespace Library.Data
         public string Sex { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string UserCode { get; set; } = string.Empty;
-       
-        public int RoleId { get; set; }
-      
-        public virtual Role? Role { get; set; }
-        public ICollection<Approve>? Approves { get;set; }
         public virtual Student? Student { get; set; }
         public virtual Tearcher? Tearcher { get; set; }
+        public ICollection<QuestionSubject>? questionSubjects { get; set; }
+        public ICollection<ReplyQuestion>? replyQuestions { get; set; }
+        public ICollection<Exam>? exams { get; set; }
+        public ICollection<NotificationSubject>? notificationSubjects { get; set; }
+        public ICollection<Help>? helps { get; set; }
+        public ICollection<Question>? questions { get; set; }
        
     }
 }

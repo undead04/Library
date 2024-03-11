@@ -1,15 +1,25 @@
 ﻿using FluentValidation.AspNetCore;
 using Library.Data;
 using Library.Model;
-using Library.Server;
+using Library.Server.AccountReponsitory;
+using Library.Server.ClassReponsitory;
+using Library.Server.DocumentRepository;
+using Library.Server.LessonReponsitory;
+using Library.Server.MailService;
+using Library.Server.MajorReposntiory;
+using Library.Server.ReissuePassword;
+using Library.Server.ResourceReponsitory;
+using Library.Server.RoleReponsitory;
+using Library.Server.SubjectReponsitory;
+using Library.Server.TopicReponsitory;
+using Library.Server.UserReponsitory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SchoolLibrary.Model;
-using SchoolLibrary.Server;
 using SchoolLibrary.Validation;
 using System.Text;
 
@@ -74,6 +84,7 @@ builder.Services.AddScoped<ILessonReponsitory, LessonReponsitory>();
 builder.Services.AddScoped<IClassReponsitory,ClassReponsitory>();
 builder.Services.AddScoped<IMajorReponsitory, MajorReponsitory>();
 builder.Services.AddScoped<IDocumentReponsitory, DocumentReponsitory>();
+builder.Services.AddScoped<IResourceReponsitory, ResourceReponsitory>();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -107,7 +118,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-await SeedRole.CreateRoleAsync(app);
+
 app.MapControllers();
 app.UseCors();
 app.Run();

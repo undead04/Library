@@ -1,9 +1,8 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server;
-using Microsoft.AspNetCore.Http;
+using Library.Server.RoleReponsitory;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
+
 
 namespace Library.Controllers
 {
@@ -44,7 +43,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
-        public async Task<IActionResult> getById(int Id)
+        public async Task<IActionResult> getById(string Id)
         {
             try
             {
@@ -61,7 +60,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("{Id}")]
-        public async Task<IActionResult> UpdateRole(int Id,RoleModel model)
+        public async Task<IActionResult> UpdateRole(string Id,RoleModel model)
         {
             try
             {
@@ -79,7 +78,7 @@ namespace Library.Controllers
             }
         }
         [HttpDelete("{Id}")]
-        public async Task<IActionResult> DeleteRole(int Id)
+        public async Task<IActionResult> DeleteRole(string Id)
         {
             try
             {

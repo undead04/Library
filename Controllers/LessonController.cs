@@ -1,9 +1,8 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server;
-using Microsoft.AspNetCore.Http;
+using Library.Server.LessonReponsitory;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Library.Controllers
 {
@@ -76,6 +75,19 @@ namespace Library.Controllers
             {
                 await reponsitory.UpdateLesson(Id,model);
                 return Ok(BaseReponsitory<string>.WithMessage("Cập nhật bài học thành công", 200));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost("addDocument")]
+        public async Task<IActionResult> AddDocumentLesson(AddDocumentLessonModel model)
+        {
+            try
+            {
+                await reponsitory.AddDocumentLesson(model);
+                return Ok(BaseReponsitory<string>.WithMessage("Thêm bài giảng thành công", 200));
             }
             catch
             {

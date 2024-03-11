@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 using Library.Data;
+using Library.Model;
 using Microsoft.AspNetCore.Identity;
-
-using SchoolLibrary.Model;
 using System.Security.Claims;
 
 namespace SchoolLibrary.Validation

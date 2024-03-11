@@ -1,9 +1,9 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server;
+using Library.Server.MajorReposntiory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
+
 
 namespace Library.Controllers
 {

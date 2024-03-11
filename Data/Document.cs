@@ -28,6 +28,6 @@ namespace Library.Data
         public virtual Subject? subject { get; set; }
         public ICollection<Lesson>?lessons { get; set; }
         public ICollection<Resources>? resources { get; set; }
-        public virtual Approve? Approve { get; set; }
+        
     }
 }

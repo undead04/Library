@@ -1,8 +1,8 @@
 ﻿using Library.DTO;
-using Library.Server;
+using Library.Server.DocumentRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Library.Controllers
 {
@@ -21,7 +21,7 @@ namespace Library.Controllers
         {
             try
             {
-                var document=await reponsitory.GetAllDocuments(SubjectId);
+                var document=await reponsitory.GetAllDocumentSubject(SubjectId);
                 return Ok(BaseReponsitory<List<DocumentDTO>>.WithData(document, 200));
             }
             catch
@@ -34,9 +34,16 @@ namespace Library.Controllers
         {
             try
             {
-                var filePath = await reponsitory.GetDoucment(documentId);
+                
                 var document = await reponsitory.GetByIdDocument(documentId);
-                return File(filePath, "application/octet-stream",document.Name);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", document.Name);
+                var provider = new FileExtensionContentTypeProvider();
+                if(!provider.TryGetContentType(filePath, out var contexttype))
+                {
+                    contexttype = "application/octet-stream";
+                }
+                var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                return File(bytes, contexttype,document.Name);
             }
             catch
             {

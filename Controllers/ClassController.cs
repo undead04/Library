@@ -1,9 +1,9 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server;
+using Library.Server.ClassReponsitory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SchoolLibrary.DTO;
+
 
 namespace Library.Controllers
 {
@@ -16,6 +16,19 @@ namespace Library.Controllers
         public ClassController(IClassReponsitory classReponsitory) 
         {
             this.classReponsitory = classReponsitory;
+        }
+        [HttpPost("AddTeacher")]
+        public async Task<IActionResult> AddTearchClass (AddTearcherClassRoom model)
+        {
+            try
+            {
+                await classReponsitory.AddSubjectClass(model);
+                return Ok(BaseReponsitory<string>.WithMessage("Thêm thành công", 200));
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpPost]
         public async Task<IActionResult> CreatClassRoom(ClassRoomModel model)
@@ -90,6 +103,20 @@ namespace Library.Controllers
             {
                 var classRoom = await classReponsitory.GetAllClass();
                 
+                return Ok(BaseReponsitory<List<ClassRoomDTO>>.WithData(classRoom, 200));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("subject/{Id}")]
+        public async Task<IActionResult> getAllClassSubject(int Id)
+        {
+            try
+            {
+                var classRoom = await classReponsitory.GetAllCLassRoomSubject(Id);
+
                 return Ok(BaseReponsitory<List<ClassRoomDTO>>.WithData(classRoom, 200));
             }
             catch

@@ -22,6 +22,31 @@ namespace Library.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Library.Data.Answer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("Istrue")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("answers");
+                });
+
             modelBuilder.Entity("Library.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -71,9 +96,6 @@ namespace Library.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -102,44 +124,7 @@ namespace Library.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Library.Data.Approve", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ReponseDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReponseUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("userId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentId")
-                        .IsUnique();
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("approves");
                 });
 
             modelBuilder.Entity("Library.Data.ClassRoom", b =>
@@ -195,6 +180,70 @@ namespace Library.Migrations
                     b.ToTable("documents");
                 });
 
+            modelBuilder.Entity("Library.Data.Exam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Create_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Form")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Time")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("exams");
+                });
+
+            modelBuilder.Entity("Library.Data.Help", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Create_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("helps");
+                });
+
             modelBuilder.Entity("Library.Data.Lesson", b =>
                 {
                     b.Property<int>("Id")
@@ -243,6 +292,219 @@ namespace Library.Migrations
                     b.ToTable("majors");
                 });
 
+            modelBuilder.Entity("Library.Data.NotificationClassRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClassRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectNotificationid")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassRoomId");
+
+                    b.HasIndex("SubjectNotificationid");
+
+                    b.ToTable("notificationClassRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.NotificationSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Create_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("notificationSubjects");
+                });
+
+            modelBuilder.Entity("Library.Data.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AnswerType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Create_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("questions");
+                });
+
+            modelBuilder.Entity("Library.Data.QuestionClassRoom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClassRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassRoomId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("questionClassRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.QuestionExam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Examid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Examid");
+
+                    b.ToTable("questionExams");
+                });
+
+            modelBuilder.Entity("Library.Data.QuestionSubject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Create_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("questionSubjects");
+                });
+
+            modelBuilder.Entity("Library.Data.ReplyQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Create_At")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("QuestionSubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionSubjectId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("replyQuestions");
+                });
+
             modelBuilder.Entity("Library.Data.Resources", b =>
                 {
                     b.Property<int>("Id")
@@ -266,37 +528,10 @@ namespace Library.Migrations
                     b.ToTable("resources");
                 });
 
-            modelBuilder.Entity("Library.Data.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("Create_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("roles");
-                });
-
             modelBuilder.Entity("Library.Data.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ClassRoomId")
                         .HasColumnType("int");
@@ -304,18 +539,11 @@ namespace Library.Migrations
                     b.Property<int>("MajorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.HasIndex("ClassRoomId");
 
                     b.HasIndex("MajorId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("students");
                 });
@@ -332,6 +560,9 @@ namespace Library.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MajorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -341,6 +572,8 @@ namespace Library.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MajorId");
 
                     b.ToTable("subjects");
                 });
@@ -359,8 +592,9 @@ namespace Library.Migrations
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TearcherId")
-                        .HasColumnType("int");
+                    b.Property<string>("TearcherId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -375,25 +609,15 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Data.Tearcher", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MajorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.HasIndex("MajorId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("tearchers");
                 });
@@ -429,6 +653,10 @@ namespace Library.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -445,6 +673,8 @@ namespace Library.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -553,32 +783,29 @@ namespace Library.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Library.Data.ApplicationUser", b =>
+            modelBuilder.Entity("Library.Data.Role", b =>
                 {
-                    b.HasOne("Library.Data.Role", "Role")
-                        .WithMany("User")
-                        .HasForeignKey("RoleId")
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.Property<DateTime>("Create_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("Role");
+                });
+
+            modelBuilder.Entity("Library.Data.Answer", b =>
+                {
+                    b.HasOne("Library.Data.Question", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("Library.Data.Approve", b =>
-                {
-                    b.HasOne("Library.Data.Document", "document")
-                        .WithOne("Approve")
-                        .HasForeignKey("Library.Data.Approve", "DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Library.Data.ApplicationUser", "user")
-                        .WithMany("Approves")
-                        .HasForeignKey("userId");
-
-                    b.Navigation("document");
-
-                    b.Navigation("user");
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("Library.Data.Document", b =>
@@ -590,6 +817,28 @@ namespace Library.Migrations
                         .IsRequired();
 
                     b.Navigation("subject");
+                });
+
+            modelBuilder.Entity("Library.Data.Exam", b =>
+                {
+                    b.HasOne("Library.Data.ApplicationUser", "applicationUsers")
+                        .WithMany("exams")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("applicationUsers");
+                });
+
+            modelBuilder.Entity("Library.Data.Help", b =>
+                {
+                    b.HasOne("Library.Data.ApplicationUser", "applicationUsers")
+                        .WithMany("helps")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("applicationUsers");
                 });
 
             modelBuilder.Entity("Library.Data.Lesson", b =>
@@ -609,6 +858,135 @@ namespace Library.Migrations
                     b.Navigation("Document");
 
                     b.Navigation("topic");
+                });
+
+            modelBuilder.Entity("Library.Data.NotificationClassRoom", b =>
+                {
+                    b.HasOne("Library.Data.ClassRoom", "ClassRoom")
+                        .WithMany("notificationClassRooms")
+                        .HasForeignKey("ClassRoomId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.NotificationSubject", "NotificationSubject")
+                        .WithMany("notificationClassRooms")
+                        .HasForeignKey("SubjectNotificationid")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ClassRoom");
+
+                    b.Navigation("NotificationSubject");
+                });
+
+            modelBuilder.Entity("Library.Data.NotificationSubject", b =>
+                {
+                    b.HasOne("Library.Data.Subject", "Subject")
+                        .WithMany("notificationSubjects")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.ApplicationUser", "User")
+                        .WithMany("notificationSubjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Library.Data.Question", b =>
+                {
+                    b.HasOne("Library.Data.ApplicationUser", "User")
+                        .WithMany("questions")
+                        .HasForeignKey("CreateUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Library.Data.QuestionClassRoom", b =>
+                {
+                    b.HasOne("Library.Data.ClassRoom", "ClassRoom")
+                        .WithMany("questionClassRooms")
+                        .HasForeignKey("ClassRoomId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.QuestionSubject", "QuestionSubject")
+                        .WithMany("questionClassRooms")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ClassRoom");
+
+                    b.Navigation("QuestionSubject");
+                });
+
+            modelBuilder.Entity("Library.Data.QuestionExam", b =>
+                {
+                    b.HasOne("Library.Data.Exam", "Exam")
+                        .WithMany("QuestionExams")
+                        .HasForeignKey("Examid")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Question", "Question")
+                        .WithMany("questionExams")
+                        .HasForeignKey("Examid")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("Library.Data.QuestionSubject", b =>
+                {
+                    b.HasOne("Library.Data.Lesson", "Lesson")
+                        .WithMany("questionSubjects")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.ApplicationUser", "ApplicationUser")
+                        .WithMany("questionSubjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("Library.Data.ReplyQuestion", b =>
+                {
+                    b.HasOne("Library.Data.QuestionSubject", "QuestionSubject")
+                        .WithMany("replyQuestions")
+                        .HasForeignKey("QuestionSubjectId");
+
+                    b.HasOne("Library.Data.ApplicationUser", "User")
+                        .WithMany("replyQuestions")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("QuestionSubject");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Library.Data.Resources", b =>
@@ -655,6 +1033,17 @@ namespace Library.Migrations
                     b.Navigation("major");
 
                     b.Navigation("user");
+                });
+
+            modelBuilder.Entity("Library.Data.Subject", b =>
+                {
+                    b.HasOne("Library.Data.Major", "Major")
+                        .WithMany("Subjects")
+                        .HasForeignKey("MajorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Major");
                 });
 
             modelBuilder.Entity("Library.Data.SubjectClassRoom", b =>
@@ -767,15 +1156,29 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Data.ApplicationUser", b =>
                 {
-                    b.Navigation("Approves");
-
                     b.Navigation("Student");
 
                     b.Navigation("Tearcher");
+
+                    b.Navigation("exams");
+
+                    b.Navigation("helps");
+
+                    b.Navigation("notificationSubjects");
+
+                    b.Navigation("questionSubjects");
+
+                    b.Navigation("questions");
+
+                    b.Navigation("replyQuestions");
                 });
 
             modelBuilder.Entity("Library.Data.ClassRoom", b =>
                 {
+                    b.Navigation("notificationClassRooms");
+
+                    b.Navigation("questionClassRooms");
+
                     b.Navigation("students");
 
                     b.Navigation("subjectClassRooms");
@@ -783,33 +1186,56 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Data.Document", b =>
                 {
-                    b.Navigation("Approve");
-
                     b.Navigation("lessons");
 
                     b.Navigation("resources");
                 });
 
+            modelBuilder.Entity("Library.Data.Exam", b =>
+                {
+                    b.Navigation("QuestionExams");
+                });
+
             modelBuilder.Entity("Library.Data.Lesson", b =>
                 {
                     b.Navigation("Resources");
+
+                    b.Navigation("questionSubjects");
                 });
 
             modelBuilder.Entity("Library.Data.Major", b =>
                 {
+                    b.Navigation("Subjects");
+
                     b.Navigation("students");
 
                     b.Navigation("tearchers");
                 });
 
-            modelBuilder.Entity("Library.Data.Role", b =>
+            modelBuilder.Entity("Library.Data.NotificationSubject", b =>
                 {
-                    b.Navigation("User");
+                    b.Navigation("notificationClassRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.Question", b =>
+                {
+                    b.Navigation("Answers");
+
+                    b.Navigation("questionExams");
+                });
+
+            modelBuilder.Entity("Library.Data.QuestionSubject", b =>
+                {
+                    b.Navigation("questionClassRooms");
+
+                    b.Navigation("replyQuestions");
                 });
 
             modelBuilder.Entity("Library.Data.Subject", b =>
                 {
                     b.Navigation("documents");
+
+                    b.Navigation("notificationSubjects");
 
                     b.Navigation("subjectClassRooms");
 

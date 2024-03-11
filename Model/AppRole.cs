@@ -1,4 +1,4 @@
-﻿namespace SchoolLibrary.Model
+﻿namespace Library.Model
 {
     public class AppRole
     {
