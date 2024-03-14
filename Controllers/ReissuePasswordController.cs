@@ -1,6 +1,6 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server.ReissuePassword;
+using Library.Services.ReissuePassword;
 using Microsoft.AspNetCore.Mvc;
 
 

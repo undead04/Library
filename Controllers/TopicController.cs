@@ -1,7 +1,7 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server.SubjectReponsitory;
-using Library.Server.TopicReponsitory;
+using Library.Services.SubjectReponsitory;
+using Library.Services.TopicReponsitory;
 using Microsoft.AspNetCore.Mvc;
 
 

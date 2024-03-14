@@ -1,18 +1,22 @@
 ﻿using FluentValidation.AspNetCore;
 using Library.Data;
 using Library.Model;
-using Library.Server.AccountReponsitory;
-using Library.Server.ClassReponsitory;
-using Library.Server.DocumentRepository;
-using Library.Server.LessonReponsitory;
-using Library.Server.MailService;
-using Library.Server.MajorReposntiory;
-using Library.Server.ReissuePassword;
-using Library.Server.ResourceReponsitory;
-using Library.Server.RoleReponsitory;
-using Library.Server.SubjectReponsitory;
-using Library.Server.TopicReponsitory;
-using Library.Server.UserReponsitory;
+using Library.Services.AccountReponsitory;
+using Library.Services.ClassReponsitory;
+using Library.Services.DocumentRepository;
+using Library.Services.LessonReponsitory;
+using Library.Services.MailService;
+using Library.Services.MajorReposntiory;
+using Library.Services.NotificationSubjectRepository;
+using Library.Services.QuestionRepository;
+using Library.Services.ReissuePassword;
+using Library.Services.ReplyQuestionRepository;
+using Library.Services.ResourceReponsitory;
+using Library.Services.RoleReponsitory;
+using Library.Services.SubjectReponsitory;
+using Library.Services.TopicReponsitory;
+using Library.Services.UserReponsitory;
+using Library.Services.UploadService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -85,6 +89,10 @@ builder.Services.AddScoped<IClassReponsitory,ClassReponsitory>();
 builder.Services.AddScoped<IMajorReponsitory, MajorReponsitory>();
 builder.Services.AddScoped<IDocumentReponsitory, DocumentReponsitory>();
 builder.Services.AddScoped<IResourceReponsitory, ResourceReponsitory>();
+builder.Services.AddScoped<IQuestionSubjectRepository, QuestionSubjectRepository>();
+builder.Services.AddScoped<INotificationSubjectRepository,NotificationSubjectRepository>();
+builder.Services.AddScoped<IReplyQuestionRepository, ReplyQuestionRepository>();
+builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -114,7 +122,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

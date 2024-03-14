@@ -22,7 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Upload\" />
+    <Folder Include="wwwroot\Uploads\Document\" />
+    <Folder Include="wwwroot\Uploads\Avatar\" />
   </ItemGroup>
 
 </Project>

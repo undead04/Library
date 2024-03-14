@@ -16,6 +16,7 @@ namespace Library.Data
         public ICollection<NotificationSubject>? notificationSubjects { get; set; }
         public ICollection<Help>? helps { get; set; }
         public ICollection<Question>? questions { get; set; }
+        public ICollection<Document>? documents { get; set; }
        
     }
 }

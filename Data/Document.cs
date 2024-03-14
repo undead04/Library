@@ -24,8 +24,10 @@ namespace Library.Data
         public string Classify { get; set; } = string.Empty;
         public DateTime Create_at { get; set; }
         public StatusDocument Status { get; set; } = StatusDocument.Wait;
+        public string CreateUserId { get; set; } = string.Empty;
         public int SubjectId { get; set; }
         public virtual Subject? subject { get; set; }
+        public virtual ApplicationUser? ApplicationUser {get;set;}
         public ICollection<Lesson>?lessons { get; set; }
         public ICollection<Resources>? resources { get; set; }
         

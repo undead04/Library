@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using Library.DTO;
 using Library.Model;
-using Library.Server.UserReponsitory;
+using Library.Services.UserReponsitory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolLibrary.Validation;

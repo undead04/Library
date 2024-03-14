@@ -1,5 +1,5 @@
 ﻿using Library.Model;
-using Library.Server.ResourceReponsitory;
+using Library.Services.ResourceReponsitory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.DTO;
@@ -16,7 +16,7 @@ namespace Library.Controllers
             this.resourceReponsitory=resourceReponsitory;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateResource(ResourceModel model)
+        public async Task<IActionResult> CreateResource([FromForm]ResourceModel model)
         {
             try
             {

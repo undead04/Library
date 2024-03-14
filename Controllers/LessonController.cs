@@ -1,6 +1,6 @@
 ﻿using Library.DTO;
 using Library.Model;
-using Library.Server.LessonReponsitory;
+using Library.Services.LessonReponsitory;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 

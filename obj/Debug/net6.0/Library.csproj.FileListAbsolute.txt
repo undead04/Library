@@ -83,3 +83,4 @@ C:\Users\Admin\source\repos\Library\Library\bin\Debug\net6.0\System.Text.Encodin
 C:\Users\Admin\source\repos\Library\Library\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\Admin\source\repos\Library\Library\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Text.Encoding.CodePages.dll
 C:\Users\Admin\source\repos\Library\Library\bin\Debug\net6.0\MimeMapping.dll
+C:\Users\Admin\source\repos\Library\Library\bin\Debug\net6.0\Library.staticwebassets.runtime.json

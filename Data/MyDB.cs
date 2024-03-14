@@ -28,6 +28,7 @@ namespace Library.Data
         public DbSet<QuestionExam> questionExams { get; set; }
         public DbSet<QuestionSubject> questionSubjects { get; set; }
         public DbSet<ReplyQuestion> replyQuestions { get; set; }
+        public DbSet<ClassLesson> classLessons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -122,6 +123,10 @@ namespace Library.Data
                 .WithMany(e => e.documents)
                 .HasForeignKey(e => e.SubjectId)
                 .OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(e => e.ApplicationUser)
+                .WithMany(e => e.documents)
+                .HasForeignKey(e => e.CreateUserId)
+                .OnDelete(DeleteBehavior.NoAction);
             });
             builder.Entity<SubjectClassRoom>(e =>
             {
@@ -177,6 +182,39 @@ namespace Library.Data
                 e.HasMany(e => e.Answers)
                 .WithOne(e => e.Question)
                 .HasForeignKey(e => e.QuestionId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+            builder.Entity<ClassLesson>(e =>
+            {
+                e.HasOne(e => e.Lesson)
+                .WithMany(e => e.ClassLessons)
+                .HasForeignKey(e => e.LessonId)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(e => e.ClassRoom)
+                .WithMany(e => e.ClassLessons)
+                .HasForeignKey(e => e.ClassId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+            builder.Entity<QuestionSubject>(e =>
+            {
+                e.HasMany(e => e.replyQuestions)
+                .WithOne(e => e.QuestionSubject)
+                .HasForeignKey(e => e.QuestionId)
+                .OnDelete(DeleteBehavior.NoAction);
+                
+            });
+            builder.Entity<ReplyQuestion>(e =>
+            {
+                e.HasOne(e => e.User)
+                .WithMany(e => e.replyQuestions)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+            builder.Entity<Exam>(e =>
+            {
+                e.HasMany(e => e.essayExams)
+                .WithOne(e => e.Exam)
+                .HasForeignKey(e => e.ExamId)
                 .OnDelete(DeleteBehavior.NoAction);
             });
 

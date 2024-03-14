@@ -1,11 +1,71 @@
 {
   "Version": 1,
-  "Hash": "V/TXwAUDn9VYsHrk5Kw4AL2G+bshRWZvshrCQK7JbGM=",
+  "Hash": "rt6eyDuDZmejVH9CyvIMhGDoGd8OO2MC7kT7Ynrv16Y=",
   "Source": "Library",
   "BasePath": "_content/Library",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "Library\\wwwroot",
+      "Source": "Library",
+      "ContentRoot": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\",
+      "BasePath": "_content/Library",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\Bảng điểm.pdf",
+      "SourceId": "Library",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\",
+      "BasePath": "_content/Library",
+      "RelativePath": "Uploads/Document/Bảng điểm.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploads\\Document\\Bảng điểm.pdf"
+    },
+    {
+      "Identity": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\ERD.xlsx",
+      "SourceId": "Library",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\",
+      "BasePath": "_content/Library",
+      "RelativePath": "Uploads/Document/ERD.xlsx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploads\\Document\\ERD.xlsx"
+    },
+    {
+      "Identity": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\Trần Văn An 22-0-21111.pdf",
+      "SourceId": "Library",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\",
+      "BasePath": "_content/Library",
+      "RelativePath": "Uploads/Document/Trần Văn An 22-0-21111.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploads\\Document\\Trần Văn An 22-0-21111.pdf"
+    }
+  ]
 }

@@ -2,11 +2,11 @@
 {
     public class DocumentModel
     {
-        
-       
+
         public string Classify { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public int SubjectId { get; set; }
-        public IFormFile? File { get; set; }
+        public List<IFormFile>? File { get; set; }
 
           
     }
