@@ -83,7 +83,7 @@ namespace Library.Services.ClassReponsitory
             {
                 SubjectId = model.SubjectId,
                 ClassRoomId = model.ClassRoomId,
-                TearcherId = model.TearcherId,
+               
             };
             await context.subjectClassRooms.AddAsync(subjectRoom);
             await context.SaveChangesAsync();

@@ -30,11 +30,11 @@ namespace Library.Controllers
             }
         }
         [HttpGet("topic/{Id}")]
-        public async Task<IActionResult> GetAllLesson(int Id)
+        public async Task<IActionResult> GetAllLesson(int Id,int?ClassId)
         {
             try
             {
-               var lesson=  await reponsitory.GetAllLesson(Id);
+               var lesson=  await reponsitory.GetAllLesson(Id,ClassId);
                 return Ok(BaseReponsitory<List<LessonDTO>>.WithData(lesson, 200));
             }
             catch

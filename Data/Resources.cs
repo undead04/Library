@@ -9,6 +9,7 @@ namespace Library.Data
         public int DoucmentId { get; set; }
         public virtual Lesson? Lesson { get; set; }
         public virtual Document? Document { get; set; }
+        public ICollection<ClassResource> ClassResources { get; set; }
 
     }
 }

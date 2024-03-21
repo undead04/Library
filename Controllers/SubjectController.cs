@@ -1,4 +1,5 @@
-﻿using Library.DTO;
+﻿using Library.Data;
+using Library.DTO;
 using Library.Model;
 using Library.Services.SubjectReponsitory;
 using Microsoft.AspNetCore.Mvc;
@@ -84,11 +85,11 @@ namespace Library.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllSubject()
+        public async Task<IActionResult> GetAllSubject(string? search, int? subjectId, string? orderBy, string? UserId, StatusDocument? statusDocument)
         {
             try
             {
-                var subject = await reponsitory.GetAll();
+                var subject = await reponsitory.GetAll(search,subjectId,orderBy,UserId,statusDocument);
                 return Ok(BaseReponsitory<List<SubjectDTO>>.WithData(subject, 200));
             }
             catch

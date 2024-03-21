@@ -8,6 +8,6 @@ namespace Library.Model
         public int SubjectId { get; set; }
         public int TopicId { get; set; }
         public string Title { get; set; } = string.Empty;
-        public IFormFile? File { get;set; }
+        public List<IFormFile>? File { get;set; }
     }
 }

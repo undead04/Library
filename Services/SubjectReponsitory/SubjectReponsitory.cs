@@ -29,6 +29,7 @@ namespace Library.Services.SubjectReponsitory
                 SubjectCode = model.SubjectCode,
                 Describe = model.Describe,
                 MajorId=model.MajorId,
+                UserId=model.UserId,
 
             };
             await context.AddAsync(subject);
@@ -45,19 +46,54 @@ namespace Library.Services.SubjectReponsitory
             }
         }
 
-        public async Task<List<SubjectDTO>> GetAll()
+        public async Task<List<SubjectDTO>> GetAll(string? search, int? subjectId, string? orderBy, string? UserId, StatusDocument? statusDocument)
         {
-            var subjects = await context.subjects.Include(f=>f.Major).ToListAsync();
-            return subjects.Select(su => new SubjectDTO
+            var subjects =  context.subjects
+                .Include(f=>f.documents)
+                .Include(f=>f.Major)
+                .AsQueryable();
+            if (!String.IsNullOrEmpty(search))
+            {
+                subjects = subjects.Where(su => su.SubjectCode.Contains(search) || su.Name.Contains(search));
+            }
+            if (subjectId.HasValue)
+            {
+                subjects = subjects.Where(su => su.Id == subjectId);
+            }
+            if (!String.IsNullOrEmpty(UserId))
+            {
+                subjects = subjects.Where(su => su.UserId == UserId);
+            }
+            if(!String.IsNullOrEmpty(orderBy))
+            {
+                switch (orderBy)
+                {
+                    case "Name":subjects=subjects.OrderBy(subjects=>subjects.Name);
+                        break;
+                   
+                }
+            }
+            if(statusDocument != null)
+            {
+                subjects=subjects.Where(su=>su.documents!.Any(doc=>doc.Status.Equals(statusDocument)));
+            }
+            return await subjects.Select(su => new SubjectDTO
             {
                 Id = su.Id,
                 Name = su.Name,
                 SubjectCode = su.SubjectCode,
                 Describe = su.Describe,
-                MajorId=su.MajorId,
-                MajorName=su.Major!.Name
+                MajorId = su.MajorId,
+                MajorName = su.Major!.Name,
+                StatusDocument=su.documents.Count!=0? su.documents.Any(doc=>doc.Status.Equals(StatusDocument.Wait))?StatusDocument.Wait.ToString():StatusDocument.Complete.ToString():string.Empty,
+                Create_at=su.documents.Count!=0?su.documents.OrderByDescending(doc=>doc.Create_at).FirstOrDefault()!.Create_at:DateTime.MinValue,
+                TotalDoucment=su.documents.Count !=0? su.documents.Count():0,
+                ApprovedDocuments=su.documents.Count!=0? su.documents.Where(doc=>doc.Status.Equals(StatusDocument.Complete)).Count():0,
+                Tearcher=su.ApplicationUser!.UserName,
+                UserId=su.UserId
                 
-            }).ToList();
+
+            }).ToListAsync();
         }
 
         public async Task<SubjectDTO> GetById(int Id)
@@ -79,23 +115,7 @@ namespace Library.Services.SubjectReponsitory
 
         }
 
-        public Task<List<SubjectDTO>> searchFilter(string? search, string? orderBy)
-        {
-            var subject = context.subjects.AsQueryable();
-            if (!string.IsNullOrEmpty(search))
-            {
-                subject = subject.Where(su => su.SubjectCode.Contains(search) || su.Name.Contains(search));
-            }
-            // lân truy cập gần nhất
-            return subject.Select(su => new SubjectDTO
-            {
-                Id = su.Id,
-                Name = su.Name,
-                SubjectCode = su.SubjectCode,
-                Describe = su.Describe,
-                MajorName=su.Major!.Name
-            }).ToListAsync();
-        }
+        
 
         public async Task UpdateSubject(int Id, SubjectModel model)
         {
@@ -105,6 +125,7 @@ namespace Library.Services.SubjectReponsitory
                 subject.Describe = model.Describe;
                 subject.Name = model.Name;
                 subject.SubjectCode = model.SubjectCode;
+                subject.UserId = model.UserId;
                 await context.SaveChangesAsync();
 
             }

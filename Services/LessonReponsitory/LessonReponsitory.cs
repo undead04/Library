@@ -3,7 +3,9 @@ using Library.DTO;
 using Library.Model;
 using Library.Services.DocumentRepository;
 using Library.Services.LessonReponsitory;
+using Library.Services.UploadService;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace Library.Services.LessonReponsitory
 {
@@ -11,36 +13,35 @@ namespace Library.Services.LessonReponsitory
     {
         private readonly MyDB context;
         private readonly IDocumentReponsitory documentReponsitory;
+        private readonly IUploadService uploadService;
 
-        public LessonReponsitory(MyDB context,IDocumentReponsitory documentReponsitory)
+        public LessonReponsitory(MyDB context,IDocumentReponsitory documentReponsitory,IUploadService uploadService)
         {
             this.context = context;
             this.documentReponsitory = documentReponsitory;
+            this.uploadService = uploadService;
         }
         public async Task CreateLesson(LessonModel model)
         {
-            var document = new Document
+            var documentModel = new DocumentModel
             {
-                CreateUserId=model.CreateUserId,
                 Classify=TypeDocument.Lesson,
+                UserId=model.CreateUserId,
                 SubjectId=model.SubjectId,
-                Create_at=DateTime.Now,
-                Name=model.File!.FileName,
+                File=model.File,
             };
-            await context.documents.AddAsync(document);
-            await context.SaveChangesAsync();
-            var lesson = new Lesson
+            var documentId= await documentReponsitory.CreateDocumentLesson(documentModel);
+            foreach(int id in documentId)
             {
-                Title = model.Title,
-                TopicId = model.TopicId,
-                DoucumentId = document.Id,
-            };
-            await context.lessons.AddAsync(lesson);
-            await context.SaveChangesAsync();
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", model.File!.FileName);
-            using (var streamFile = new FileStream(filePath, FileMode.Create))
-            {
-                model.File.CopyTo(streamFile);
+                var lesson = new Lesson
+                {
+                    Title = model.Title,
+                    TopicId = model.TopicId,
+                    DoucumentId = id,
+                };
+                await context.lessons.AddAsync(lesson);
+                await context.SaveChangesAsync();
+                
             }
         }
 
@@ -54,13 +55,24 @@ namespace Library.Services.LessonReponsitory
             }
         }
 
-        public async Task<List<LessonDTO>> GetAllLesson(int TopicId)
+        public async Task<List<LessonDTO>> GetAllLesson(int TopicId, int? ClassId)
         {
+            if(ClassId.HasValue)
+            {
+                return await context.lessons.Include(f => f.Document)
+                    .Where(le => le.TopicId == TopicId && le.ClassLessons!.Any(cl => cl.ClassId == ClassId))
+                    .Select(le => new LessonDTO
+                {
+                    Id = le.Id,
+                    Title = le.Title,
+                    UrlDocument=uploadService.GetUrlImage(le.Document!.Name, "Document")
+                }).ToListAsync();
+            }
             return await context.lessons.Where(le => le.TopicId == TopicId).Select(le => new LessonDTO
             {
                 Id = le.Id,
                 Title = le.Title,
-                DocumentId = le.DoucumentId,
+                UrlDocument = uploadService.GetUrlImage( le.Document!.Name,"Document")
             }).ToListAsync();
         }
 
@@ -73,7 +85,7 @@ namespace Library.Services.LessonReponsitory
                 {
                     Id = lesson.Id,
                     Title = lesson.Title,
-                    DocumentId = lesson.DoucumentId,
+                    UrlDocument = uploadService.GetUrlImage("Document", lesson.Document!.Name)
                 };
             }
             return null;
@@ -85,7 +97,6 @@ namespace Library.Services.LessonReponsitory
             if (lesson != null)
             {
                 lesson.Title = model.Title;
-
                 await context.SaveChangesAsync();
             }
         }

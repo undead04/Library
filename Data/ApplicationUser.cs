@@ -10,6 +10,7 @@ namespace Library.Data
         public string UserCode { get; set; } = string.Empty;
         public virtual Student? Student { get; set; }
         public virtual Tearcher? Tearcher { get; set; }
+        public ICollection<Subject>? Subjects { get; set; }
         public ICollection<QuestionSubject>? questionSubjects { get; set; }
         public ICollection<ReplyQuestion>? replyQuestions { get; set; }
         public ICollection<Exam>? exams { get; set; }
@@ -17,6 +18,8 @@ namespace Library.Data
         public ICollection<Help>? helps { get; set; }
         public ICollection<Question>? questions { get; set; }
         public ICollection<Document>? documents { get; set; }
+        public ICollection<PrivateFile>? privateFiles { get; set; }
+        public ICollection<HistoryLike>? HistoryLikes { get; set; }
        
     }
 }

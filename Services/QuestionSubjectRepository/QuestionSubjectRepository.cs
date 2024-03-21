@@ -79,7 +79,7 @@ namespace Library.Services.QuestionRepository
                 context=qu.Context,
                 UserId=qu.UserId,
                 UserName=qu.ApplicationUser!.UserName,
-                Like=qu.Like,
+               
             }).ToListAsync();
            
         }
@@ -88,7 +88,7 @@ namespace Library.Services.QuestionRepository
             var question = await context.questionSubjects.Where(qu => qu.Id == Id).FirstOrDefaultAsync();
             if(question != null)
             {
-                question.Like += 1;
+               
                 await context.SaveChangesAsync();
             }
         }
@@ -105,7 +105,7 @@ namespace Library.Services.QuestionRepository
                     context = question.Context,
                     UserId = question.UserId,
                     UserName = question.ApplicationUser!.UserName,
-                    Like = question.Like,
+                   
                 };
             }
             return null;

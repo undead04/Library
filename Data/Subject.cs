@@ -12,6 +12,9 @@ namespace Library.Data
         [Required] 
         public string Describe { get; set; } = string.Empty;    
         public int MajorId { get; set; }
+        public string UserId { get; set; }=string.Empty;
+        public virtual ApplicationUser? ApplicationUser { get; set; }
+        public ICollection<Exam>? exams { get; set; }
         public virtual Major? Major { get; set; }
         public ICollection<Topic>? topics { get; set; }
         public ICollection<Document>? documents { get; set; }

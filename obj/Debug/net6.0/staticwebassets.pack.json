@@ -1,16 +1,36 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\Bảng điểm.pdf",
-      "PackagePath": "staticwebassets\\Uploads\\Document\\Bảng điểm.pdf"
+      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\Bai 03 -  SportsStore A real application part 2_NoCopy (1).pdf",
+      "PackagePath": "staticwebassets\\Uploads\\Document\\Bai 03 -  SportsStore A real application part 2_NoCopy (1).pdf"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\DataSanPham.xlsx",
+      "PackagePath": "staticwebassets\\Uploads\\Document\\DataSanPham.xlsx"
     },
     {
       "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\ERD.xlsx",
       "PackagePath": "staticwebassets\\Uploads\\Document\\ERD.xlsx"
     },
     {
-      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\Trần Văn An 22-0-21111.pdf",
-      "PackagePath": "staticwebassets\\Uploads\\Document\\Trần Văn An 22-0-21111.pdf"
+      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\an.pdf",
+      "PackagePath": "staticwebassets\\Uploads\\Document\\an.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\bang diem cua an.pdf",
+      "PackagePath": "staticwebassets\\Uploads\\Document\\bang diem cua an.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Document\\test2.pdf.pdf",
+      "PackagePath": "staticwebassets\\Uploads\\Document\\test2.pdf.pdf"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\Exam\\Nana.xlsx",
+      "PackagePath": "staticwebassets\\Uploads\\Exam\\Nana.xlsx"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\source\\repos\\Library\\Library\\wwwroot\\Uploads\\PrivateFile\\bảng điểm của sang.pdf",
+      "PackagePath": "staticwebassets\\Uploads\\PrivateFile\\bảng điểm của sang.pdf"
     },
     {
       "Id": "obj\\Debug\\net6.0\\staticwebassets\\msbuild.Library.Microsoft.AspNetCore.StaticWebAssets.props",

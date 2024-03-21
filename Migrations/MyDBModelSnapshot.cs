@@ -150,6 +150,29 @@ namespace Library.Migrations
                     b.ToTable("classLessons");
                 });
 
+            modelBuilder.Entity("Library.Data.ClassResource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResourceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("ResourceId");
+
+                    b.ToTable("classResources");
+                });
+
             modelBuilder.Entity("Library.Data.ClassRoom", b =>
                 {
                     b.Property<int>("Id")
@@ -179,9 +202,16 @@ namespace Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ApprovedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Classify")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateCancel")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreateUserId")
                         .IsRequired()
@@ -194,11 +224,23 @@ namespace Library.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -228,7 +270,7 @@ namespace Library.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("EssayExam");
+                    b.ToTable("essayExams");
                 });
 
             modelBuilder.Entity("Library.Data.Exam", b =>
@@ -250,11 +292,22 @@ namespace Library.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Subjectid")
+                        .HasColumnType("int");
+
                     b.Property<string>("Time")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -263,6 +316,8 @@ namespace Library.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Subjectid");
 
                     b.HasIndex("UserId");
 
@@ -293,6 +348,21 @@ namespace Library.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("helps");
+                });
+
+            modelBuilder.Entity("Library.Data.HistoryLike", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SubjectQuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "SubjectQuestionId");
+
+                    b.HasIndex("SubjectQuestionId");
+
+                    b.ToTable("historyLikes");
                 });
 
             modelBuilder.Entity("Library.Data.Lesson", b =>
@@ -401,6 +471,41 @@ namespace Library.Migrations
                     b.ToTable("notificationSubjects");
                 });
 
+            modelBuilder.Entity("Library.Data.PrivateFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreateUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Create_at")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreateUserId");
+
+                    b.ToTable("privateFiles");
+                });
+
             modelBuilder.Entity("Library.Data.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -485,6 +590,8 @@ namespace Library.Migrations
 
                     b.HasIndex("Examid");
 
+                    b.HasIndex("QuestionId");
+
                     b.ToTable("questionExams");
                 });
 
@@ -504,9 +611,6 @@ namespace Library.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("LessonId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Like")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -623,9 +727,15 @@ namespace Library.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("MajorId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("subjects");
                 });
@@ -644,8 +754,7 @@ namespace Library.Migrations
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TearcherId")
-                        .IsRequired()
+                    b.Property<string>("TearcherUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -654,7 +763,7 @@ namespace Library.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.HasIndex("TearcherId");
+                    b.HasIndex("TearcherUserId");
 
                     b.ToTable("subjectClassRooms");
                 });
@@ -879,6 +988,25 @@ namespace Library.Migrations
                     b.Navigation("Lesson");
                 });
 
+            modelBuilder.Entity("Library.Data.ClassResource", b =>
+                {
+                    b.HasOne("Library.Data.ClassRoom", "ClassRoom")
+                        .WithMany("classResources")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.Resources", "Resources")
+                        .WithMany("ClassResources")
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ClassRoom");
+
+                    b.Navigation("Resources");
+                });
+
             modelBuilder.Entity("Library.Data.Document", b =>
                 {
                     b.HasOne("Library.Data.ApplicationUser", "ApplicationUser")
@@ -911,11 +1039,19 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Data.Exam", b =>
                 {
+                    b.HasOne("Library.Data.Subject", "Subject")
+                        .WithMany("exams")
+                        .HasForeignKey("Subjectid")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Library.Data.ApplicationUser", "applicationUsers")
                         .WithMany("exams")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Subject");
 
                     b.Navigation("applicationUsers");
                 });
@@ -929,6 +1065,25 @@ namespace Library.Migrations
                         .IsRequired();
 
                     b.Navigation("applicationUsers");
+                });
+
+            modelBuilder.Entity("Library.Data.HistoryLike", b =>
+                {
+                    b.HasOne("Library.Data.QuestionSubject", "QuestionSubject")
+                        .WithMany("historyLikes")
+                        .HasForeignKey("SubjectQuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Library.Data.ApplicationUser", "User")
+                        .WithMany("HistoryLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("QuestionSubject");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Library.Data.Lesson", b =>
@@ -988,6 +1143,17 @@ namespace Library.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Library.Data.PrivateFile", b =>
+                {
+                    b.HasOne("Library.Data.ApplicationUser", "User")
+                        .WithMany("privateFiles")
+                        .HasForeignKey("CreateUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Library.Data.Question", b =>
                 {
                     b.HasOne("Library.Data.ApplicationUser", "User")
@@ -1036,7 +1202,7 @@ namespace Library.Migrations
 
                     b.HasOne("Library.Data.Question", "Question")
                         .WithMany("questionExams")
-                        .HasForeignKey("Examid")
+                        .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -1137,6 +1303,14 @@ namespace Library.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Library.Data.ApplicationUser", "ApplicationUser")
+                        .WithMany("Subjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
                     b.Navigation("Major");
                 });
 
@@ -1154,17 +1328,13 @@ namespace Library.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Library.Data.Tearcher", "Tearcher")
+                    b.HasOne("Library.Data.Tearcher", null)
                         .WithMany("subjectClassRooms")
-                        .HasForeignKey("TearcherId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("TearcherUserId");
 
                     b.Navigation("ClassRoom");
 
                     b.Navigation("Subject");
-
-                    b.Navigation("Tearcher");
                 });
 
             modelBuilder.Entity("Library.Data.Tearcher", b =>
@@ -1250,7 +1420,11 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Data.ApplicationUser", b =>
                 {
+                    b.Navigation("HistoryLikes");
+
                     b.Navigation("Student");
+
+                    b.Navigation("Subjects");
 
                     b.Navigation("Tearcher");
 
@@ -1262,6 +1436,8 @@ namespace Library.Migrations
 
                     b.Navigation("notificationSubjects");
 
+                    b.Navigation("privateFiles");
+
                     b.Navigation("questionSubjects");
 
                     b.Navigation("questions");
@@ -1272,6 +1448,8 @@ namespace Library.Migrations
             modelBuilder.Entity("Library.Data.ClassRoom", b =>
                 {
                     b.Navigation("ClassLessons");
+
+                    b.Navigation("classResources");
 
                     b.Navigation("notificationClassRooms");
 
@@ -1328,14 +1506,23 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.Data.QuestionSubject", b =>
                 {
+                    b.Navigation("historyLikes");
+
                     b.Navigation("questionClassRooms");
 
                     b.Navigation("replyQuestions");
                 });
 
+            modelBuilder.Entity("Library.Data.Resources", b =>
+                {
+                    b.Navigation("ClassResources");
+                });
+
             modelBuilder.Entity("Library.Data.Subject", b =>
                 {
                     b.Navigation("documents");
+
+                    b.Navigation("exams");
 
                     b.Navigation("notificationSubjects");
 

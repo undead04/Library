@@ -29,7 +29,10 @@ namespace Library.Data
         public DbSet<QuestionSubject> questionSubjects { get; set; }
         public DbSet<ReplyQuestion> replyQuestions { get; set; }
         public DbSet<ClassLesson> classLessons { get; set; }
-
+        public DbSet<ClassResource> classResources { get; set; }
+        public DbSet<EssayExam> essayExams { get; set; }
+        public DbSet<HistoryLike> historyLikes { get; set; }
+        public DbSet<PrivateFile> privateFiles { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -63,6 +66,18 @@ namespace Library.Data
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+                e.HasMany(e => e.documents)
+                .WithOne(e => e.ApplicationUser)
+                .HasForeignKey(e => e.ApprovedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasMany(e => e.privateFiles)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.CreateUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasMany(e => e.HistoryLikes)
+                .WithOne(e => e.User)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
             });
             builder.Entity<Major>(e =>
             {
@@ -93,6 +108,14 @@ namespace Library.Data
                 .WithOne(e => e.Subject)
                 .HasForeignKey(e => e.SubjectId)
                 .OnDelete(DeleteBehavior.Cascade);
+                e.HasMany(e => e.exams)
+                .WithOne(e => e.Subject)
+                .HasForeignKey(e => e.Subjectid)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(e => e.ApplicationUser)
+                .WithMany(e => e.Subjects)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
             });
             builder.Entity<Lesson>(e =>
             {
@@ -138,10 +161,7 @@ namespace Library.Data
                .WithMany(x => x.subjectClassRooms)
                .HasForeignKey(x => x.ClassRoomId)
                .OnDelete(DeleteBehavior.NoAction);
-                e.HasOne(e => e.Tearcher)
-                .WithMany(e => e.subjectClassRooms)
-                .HasForeignKey(e => e.TearcherId)
-                .OnDelete(DeleteBehavior.NoAction);
+                
             });
             builder.Entity<QuestionClassRoom>(e =>
             {
@@ -174,7 +194,7 @@ namespace Library.Data
                 .OnDelete(DeleteBehavior.NoAction);
                 e.HasOne(e => e.Question)
                 .WithMany(e => e.questionExams)
-                .HasForeignKey(e => e.Examid)
+                .HasForeignKey(e => e.QuestionId)
                 .OnDelete(DeleteBehavior.NoAction);
             });
             builder.Entity<Question>(e =>
@@ -201,6 +221,10 @@ namespace Library.Data
                 .WithOne(e => e.QuestionSubject)
                 .HasForeignKey(e => e.QuestionId)
                 .OnDelete(DeleteBehavior.NoAction);
+                e.HasMany(e => e.historyLikes)
+                .WithOne(e => e.QuestionSubject)
+                .HasForeignKey(e => e.SubjectQuestionId)
+                .OnDelete(DeleteBehavior.NoAction);
                 
             });
             builder.Entity<ReplyQuestion>(e =>
@@ -217,7 +241,21 @@ namespace Library.Data
                 .HasForeignKey(e => e.ExamId)
                 .OnDelete(DeleteBehavior.NoAction);
             });
-
+            builder.Entity<ClassResource>(e =>
+            {
+                e.HasOne(e => e.ClassRoom)
+                .WithMany(e => e.classResources)
+                .HasForeignKey(e => e.ClassId)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(e => e.Resources)
+                .WithMany(e => e.ClassResources)
+                .HasForeignKey(e => e.ResourceId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+            builder.Entity<HistoryLike>(e =>
+            {
+                e.HasKey(e => new { e.UserId, e.SubjectQuestionId });
+            });
 
 
 

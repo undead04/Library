@@ -8,6 +8,6 @@
         public int SubjectId { get; set; }
         public List<IFormFile>? File { get; set; }
 
-          
+
     }
 }

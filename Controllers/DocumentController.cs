@@ -1,4 +1,5 @@
-﻿using Library.DTO;
+﻿using Library.Data;
+using Library.DTO;
 using Library.Model;
 using Library.Services.DocumentRepository;
 using Microsoft.AspNetCore.Http;
@@ -17,40 +18,8 @@ namespace Library.Controllers
         {
             this.reponsitory = reponsitory;
         }
-        [HttpGet("Subject/{Id}")]
-        public async Task<IActionResult> GetAllDocument(int Id)
-        {
-            try
-            {
-                var document=await reponsitory.GetAllDocumentSubject(Id);
-                return Ok(BaseReponsitory<List<DocumentDTO>>.WithData(document, 200));
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        [HttpGet("download/{documentId}")]
-        public async Task<IActionResult> GetFile(int documentId)
-        {
-            try
-            {
-                
-                var document = await reponsitory.GetByIdDocument(documentId);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", document.Name);
-                var provider = new FileExtensionContentTypeProvider();
-                if(!provider.TryGetContentType(filePath, out var contexttype))
-                {
-                    contexttype = "application/octet-stream";
-                }
-                var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
-                return File(bytes, contexttype,document.Name);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
+       
+       
         [HttpDelete("{documentId}")]
         public async Task<IActionResult> DeleteDocument(int documentId)
         {
@@ -95,11 +64,11 @@ namespace Library.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllDocument(string typeDocument, string UserId)
+        public async Task<IActionResult> GetAllDocument(string? typeDocument, string? UserId,int?subjectid,StatusDocument? statusDocument)
         {
             try
             {
-                var document = await reponsitory.GellAllDocument(typeDocument, UserId);
+                var document = await reponsitory.GellAllDocument(typeDocument, UserId,subjectid,statusDocument);
                 return Ok(BaseReponsitory<List<DocumentDTO>>.WithData(document, 200));
             }
             catch

@@ -205,7 +205,7 @@ namespace Library.Services.UserReponsitory
         }
         public async Task<List<SubjectDTO>> GetTearcherSubject(string tearcherId)
         {
-            var subjects=await context.subjects.Where(su=>su.subjectClassRooms.Any(su=>su.TearcherId==tearcherId)).ToListAsync();
+            var subjects = await context.subjects.ToListAsync();
             return subjects.Select(su => new SubjectDTO
             {
                 Id = su.Id,

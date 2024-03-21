@@ -2,61 +2,74 @@
 using Library.Model;
 using Library.Data;
 using Microsoft.EntityFrameworkCore;
+using Library.Services.DocumentRepository;
+using System.Reflection.Metadata;
+using Library.Services.UploadService;
 
 namespace Library.Services.ResourceReponsitory
 {
     public class ResourceReponsitory : IResourceReponsitory
     {
         private readonly MyDB context;
+        private readonly IDocumentReponsitory documnetReponsitory;
 
-        public ResourceReponsitory(MyDB context) 
+        
+        private readonly IUploadService uploadService;
+
+        public ResourceReponsitory(MyDB context, IDocumentReponsitory documentReponsitory, IUploadService uploadService)
         {
             this.context = context;
-        
+            this.documnetReponsitory = documentReponsitory;
+            this.uploadService = uploadService;
+
         }
         public async Task AddResourceDocument(AddDocumnetResourceModel model)
         {
-            
-            
-            await context.SaveChangesAsync();
+           foreach(var id in model.DocumnetId)
+            {
+                var resoure = new Resources
+                {
+                    LessonId=model.LessonId,
+                    DoucmentId=id
+                };
+                await context.resources.AddAsync(resoure);
+                await context.SaveChangesAsync();
+            }
         }
 
         public async Task CreateResource(ResourceModel model)
         {
-            var document = new Document
+           
+            var documentModel = new DocumentModel
             {
-                CreateUserId = model.CreateUserId,
                 Classify = TypeDocument.Resource,
-                Create_at = DateTime.Now,
+                UserId = model.CreateUserId,
                 SubjectId = model.SubjectId,
-                Name=model.File!.FileName
+                File=model.File
             };
-            await context.documents.AddAsync(document);
-            await context.SaveChangesAsync();
-            var resource = new Resources
+            var documentId = await documnetReponsitory.CreateDocumentLesson(documentModel);
+            foreach(var id in documentId)
             {
-                LessonId = model.LessonId,
-                DoucmentId=document.Id
+                var resource = new Resources
+                {
+                    LessonId = model.LessonId,
+                    DoucmentId = id
 
-            };
-            await context.resources.AddAsync(resource);
-            await context.SaveChangesAsync();
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", model.File!.FileName);
-            using (var streamFile = new FileStream(filePath, FileMode.Create))
-            {
-                model.File.CopyTo(streamFile);
+                };
+                await context.resources.AddAsync(resource);
+                await context.SaveChangesAsync();
             }
+           
 
         }
 
         public async Task<List<DTOResource>> GetAllResourceLesson(int LessonId)
         {
-            var resource = await context.resources.Where(re => re.LessonId == LessonId).ToListAsync();
+            var resource = await context.resources.Include(f=>f.Document).Where(re => re.LessonId == LessonId).ToListAsync();
             return resource.Select(re => new DTOResource
             {
                 Id=re.Id,
-                DocumentId=re.DoucmentId,
-                LessonId=re.LessonId
+                UrlFile=uploadService.GetUrlImage(re.Document!.Name, "Document")
             }).ToList();
         }
 
@@ -68,8 +81,7 @@ namespace Library.Services.ResourceReponsitory
                 return new DTOResource
                 {
                     Id = resource.Id,
-                    DocumentId = resource.DoucmentId,
-                    LessonId = resource.LessonId
+                    UrlFile = uploadService.GetUrlImage(resource.Document!.Name, "Document")
                 };
             }
             return null;

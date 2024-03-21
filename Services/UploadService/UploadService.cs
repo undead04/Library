@@ -1,4 +1,7 @@
-﻿namespace Library.Services.UploadService
+﻿using Library.Services.DocumentRepository;
+using System.IO;
+
+namespace Library.Services.UploadService
 {
     public class UploadService : IUploadService
     {
@@ -7,6 +10,7 @@
         public UploadService(IWebHostEnvironment environment)
         {
             this.environment = environment;
+            
         }
 
         public string GetFilePath(string ProCode)
@@ -52,6 +56,24 @@
                 File.Move(filePath,filePathNew);
             }
 
+        }
+        public string GetExtensionFile(string ProCode, IFormFile image)
+        {
+            var filePath = GetFilePath(ProCode);
+            string imagePath = filePath + $"\\{image.FileName}";
+            return Path.GetExtension(imagePath);
+        }
+        public string GetSizeFile(string ProCode, IFormFile image)
+        {
+            var filePath = GetFilePath(ProCode);
+            string imagePath = filePath + $"\\{image.FileName}";
+            FileInfo fileInfo = new FileInfo(imagePath);
+            long fileSizeInBytes = fileInfo.Length;
+
+            // Chuyển đổi kích thước từ byte sang các đơn vị khác như KB, MB, GB (tùy ý)
+            double fileSizeInKB = (double)fileSizeInBytes / 1024; // Chia cho 1024 để chuyển đổi sang KB
+            double fileSizeInMB = fileSizeInKB / 1024;
+            return fileSizeInMB + " MB";
         }
     }
 }

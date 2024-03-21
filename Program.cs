@@ -26,6 +26,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SchoolLibrary.Validation;
 using System.Text;
+using Library.Services.ClassLessonRepository;
+using Library.Services.MultipleChoiceRepository;
+using Library.Services.ExamRepository;
+using Library.Services.HelpRepository;
+using Library.Services.MySubjectService;
+using Library.Services.ApproveDocumetService;
+using Library.Services.PrivateFileRepository;
+using Library.Services.ApproveExamServices;
+using Library.Services.ExcelService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +102,15 @@ builder.Services.AddScoped<IQuestionSubjectRepository, QuestionSubjectRepository
 builder.Services.AddScoped<INotificationSubjectRepository,NotificationSubjectRepository>();
 builder.Services.AddScoped<IReplyQuestionRepository, ReplyQuestionRepository>();
 builder.Services.AddScoped<IUploadService, UploadService>();
+builder.Services.AddScoped<IClassLessonRepository, ClassLessonRepository>();
+builder.Services.AddScoped<IMultipleChoiceRepository, MultipleChoiceRepository>();
+builder.Services.AddScoped<IExamRepository, ExamRepository>();
+builder.Services.AddScoped<IHelpRepository, HelpRepository>();
+builder.Services.AddScoped<IMySubjectService, MySubjectService>();
+builder.Services.AddScoped<IApproveDocumetService, ApproveDocumentService>();
+builder.Services.AddScoped<IPrivateFileRepository, PrivateFileRepository>();
+builder.Services.AddScoped<IApporveExamServices, ApproveExamService>();
+builder.Services.AddScoped<IExcelService, ExcelService>();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -10,6 +10,7 @@
         public ICollection<NotificationClassRoom>? notificationClassRooms { get; set; }
         public ICollection<Student>? students { get; set; } 
         public ICollection<QuestionClassRoom>? questionClassRooms { get; set; }
+        public ICollection<ClassResource>? classResources { get; set; }
 
 
 

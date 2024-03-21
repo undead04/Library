@@ -26,6 +26,11 @@ namespace Library.Data
         public StatusDocument Status { get; set; } = StatusDocument.Wait;
         public string CreateUserId { get; set; } = string.Empty;
         public int SubjectId { get; set; }
+        public DateTime CreateCancel { get; set; }
+        public string Note { get; set; }=string.Empty;
+        public string ApprovedByUserId { get; set; }=string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public string Size { get; set; } = string.Empty;
         public virtual Subject? subject { get; set; }
         public virtual ApplicationUser? ApplicationUser {get;set;}
         public ICollection<Lesson>?lessons { get; set; }
