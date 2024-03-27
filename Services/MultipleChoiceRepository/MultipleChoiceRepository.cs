@@ -3,6 +3,7 @@ using Library.Data;
 using Library.DTO;
 using Library.Model;
 using Library.Services.ExcelService;
+using Library.Services.UploadService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services.MultipleChoiceRepository
@@ -10,23 +11,22 @@ namespace Library.Services.MultipleChoiceRepository
     public class MultipleChoiceRepository : IMultipleChoiceRepository
     {
         private readonly MyDB context;
-        private readonly IExcelService excelService;
 
-        public MultipleChoiceRepository(MyDB context,IExcelService excelService) 
+        public MultipleChoiceRepository(MyDB context) 
         {
             this.context = context;
-            this.excelService=excelService;
+            
+            
         }
         public async Task<int> CreateQuestion(QuestionModel model)
         {
             var question = new Question
             {
                 CreateUserId = model.CreateUserId,
-                Create_at = model.Create_at,
                 Context = model.Context,
                 Level=model.Level,
-               
                 SubjectId=model.SubjectId,
+                Create_at=DateTime.Now.Date,
             };
             await context.questions.AddAsync(question);
             await context.SaveChangesAsync();
@@ -114,5 +114,7 @@ namespace Library.Services.MultipleChoiceRepository
                 await context.SaveChangesAsync();
             }
         }
+        
+
     }
 }

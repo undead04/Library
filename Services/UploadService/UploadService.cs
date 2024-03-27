@@ -13,14 +13,14 @@ namespace Library.Services.UploadService
             
         }
 
-        public string GetFilePath(string ProCode)
+        public string GetFilePath(string ProCode,string name)
         {
-            return environment.WebRootPath + $"\\Uploads\\{ProCode}";
+            return environment.WebRootPath + $"\\Uploads\\{ProCode}\\{name}";
         }
-        public async Task<string> UploadImage(int id, string procode, IFormFile image)
+        public async Task<string> UploadImage(string procode, IFormFile image)
         {
             
-            var filePath = GetFilePath(procode);
+            string filePath = GetFilePath(procode,string.Empty);
             if (!System.IO.Directory.Exists(filePath))
             {
                 System.IO.Directory.CreateDirectory(filePath);
@@ -39,8 +39,8 @@ namespace Library.Services.UploadService
         }
         public void DeleteImage(string ProCode, string nameImage)
         {
-            var filePath = GetFilePath(ProCode);
-            var imagePath = filePath + $"\\{nameImage}";
+            string imagePath = GetFilePath(ProCode, nameImage);
+           
             if (File.Exists(imagePath))
             {
                 File.Delete(imagePath);
@@ -49,24 +49,23 @@ namespace Library.Services.UploadService
 
         public void RenameImage(string ProCode, string oldName,string newName)
         {
-            var filePath = GetFilePath(ProCode) + $"\\{oldName}";
-            var filePathNew = GetFilePath(ProCode) + $"\\{newName}";
+            string filePath = GetFilePath(ProCode, oldName);
+            string filePathNew = GetFilePath(ProCode,newName);
             if(File.Exists(filePath))
             {
                 File.Move(filePath,filePathNew);
             }
 
         }
-        public string GetExtensionFile(string ProCode, IFormFile image)
+        public string GetExtensionFile(string ProCode, string name)
         {
-            var filePath = GetFilePath(ProCode);
-            string imagePath = filePath + $"\\{image.FileName}";
+            string imagePath = GetFilePath(ProCode,name);
             return Path.GetExtension(imagePath);
         }
-        public string GetSizeFile(string ProCode, IFormFile image)
+        public string GetSizeFile(string ProCode, string name)
         {
-            var filePath = GetFilePath(ProCode);
-            string imagePath = filePath + $"\\{image.FileName}";
+            string imagePath = GetFilePath(ProCode, name);
+           
             FileInfo fileInfo = new FileInfo(imagePath);
             long fileSizeInBytes = fileInfo.Length;
 

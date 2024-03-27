@@ -1,14 +1,11 @@
-﻿namespace Library.Data
+﻿namespace Library.DTO
 {
-    public class Notification
+    public class NotificationDTO
     {
-        public int Id { get; set; }
+        public int NotificationId { get; set; }
         public string UserId { get; set; } = string.Empty;
         public DateTime CreateDate { get; set; }
         public string Content { get; set; } = string.Empty;
-       
-        public ICollection<MyNotification>? myNotifications { get; set; }
-
-
+        public bool IsRead { get; set; } = false;
     }
 }

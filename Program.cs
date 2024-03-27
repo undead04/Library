@@ -35,6 +35,13 @@ using Library.Services.ApproveDocumetService;
 using Library.Services.PrivateFileRepository;
 using Library.Services.ApproveExamServices;
 using Library.Services.ExcelService;
+using Microsoft.AspNetCore.WebSockets;
+using Library.Services.SystemNotificationRepository;
+using Library.Services.NotificationRepository;
+using Library.Services.MyNotificationRepository;
+using Library.Services.HistoryLikeRepository;
+using Library.Services.JWTService;
+using Library.Services.ClaimsService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -111,6 +118,12 @@ builder.Services.AddScoped<IApproveDocumetService, ApproveDocumentService>();
 builder.Services.AddScoped<IPrivateFileRepository, PrivateFileRepository>();
 builder.Services.AddScoped<IApporveExamServices, ApproveExamService>();
 builder.Services.AddScoped<IExcelService, ExcelService>();
+builder.Services.AddScoped<ISystemNotificationRepository, SystemNotificationRepository>();
+builder.Services.AddScoped<INotificationRepository,NotificationRepository>();
+builder.Services.AddScoped<IMyNotificationRepository, MyNotificationRepository>();
+builder.Services.AddScoped<IHistoryLikeRepository, HistoryLikeRepository>();
+builder.Services.AddScoped<IJWTSevice, JWTService>();
+builder.Services.AddScoped<IClaimService, IClaimService>();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -131,7 +144,52 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
+// phân quyền
+var policyConfigurations = new List<PolicyConfiguration>
+        {
+            new PolicyConfiguration { PolicyName = "SubjectView", ClaimType = "subject", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "SubjectEdit", ClaimType = "subject", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "PrivateCreate", ClaimType = "private", ClaimValue = "create" },
+            new PolicyConfiguration { PolicyName = "PrivateView", ClaimType = "private", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "PrivateEdit", ClaimType = "private", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "PrivateDelete", ClaimType = "private", ClaimValue = "delete" },
+            new PolicyConfiguration { PolicyName = "PrivateDownload", ClaimType = "private", ClaimValue = "download" },
+            new PolicyConfiguration { PolicyName = "DocumentCreate", ClaimType = "document", ClaimValue = "create" },
+            new PolicyConfiguration { PolicyName = "DocumentView", ClaimType = "document", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "DocumentEdit", ClaimType = "document", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "DocumentDelete", ClaimType = "document", ClaimValue = "delete" },
+            new PolicyConfiguration { PolicyName = "DocumentDownload", ClaimType = "document", ClaimValue = "download" },
+            new PolicyConfiguration { PolicyName = "DocumentAdd", ClaimType = "document", ClaimValue = "add" },
+            new PolicyConfiguration { PolicyName = "ExamCreate", ClaimType = "exam", ClaimValue = "create" },
+            new PolicyConfiguration { PolicyName = "ExamView", ClaimType = "exam", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "ExamEdit", ClaimType = "exam", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "ExamDelete", ClaimType = "exam", ClaimValue = "delete" },
+            new PolicyConfiguration { PolicyName = "ExamDownload", ClaimType = "exam", ClaimValue = "download" },
+            new PolicyConfiguration { PolicyName = "ExamApprove", ClaimType = "exam", ClaimValue = "approve" },
+            new PolicyConfiguration { PolicyName = "NotificationView", ClaimType = "notification", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "NotificationSystem", ClaimType = "notification", ClaimValue = "system" },
+            new PolicyConfiguration { PolicyName = "NotificationEdit", ClaimType = "notification", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "NotificationDelete", ClaimType = "notification", ClaimValue = "delete" },
+            new PolicyConfiguration { PolicyName = "RoleCreate", ClaimType = "role", ClaimValue = "create" },
+            new PolicyConfiguration { PolicyName = "RoleView", ClaimType = "role", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "RoleEdit", ClaimType = "role", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "RoleDelete", ClaimType = "role", ClaimValue = "delete" },
+            new PolicyConfiguration { PolicyName = "AccountView", ClaimType = "Account", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "AccountEdit", ClaimType = "Account", ClaimValue = "edit" },
+            // Add more policy configurations as needed
+        };
 
+// Add authorization policies dynamically based on the configurations
+foreach (var policyConfig in policyConfigurations)
+{
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy(policyConfig.PolicyName, policy =>
+        {
+            policy.RequireClaim(policyConfig.ClaimType, policyConfig.ClaimValue);
+        });
+    });
+}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

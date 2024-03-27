@@ -20,6 +20,9 @@ namespace Library.Data
         public ICollection<Document>? documents { get; set; }
         public ICollection<PrivateFile>? privateFiles { get; set; }
         public ICollection<HistoryLike>? HistoryLikes { get; set; }
+        public virtual SystemNotification? systemNotifications { get; set; }
+        public ICollection<MyNotification>? myNotifications { get; set; }
+
        
     }
 }

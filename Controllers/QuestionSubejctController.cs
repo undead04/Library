@@ -1,5 +1,6 @@
 ﻿using Library.DTO;
 using Library.Model;
+using Library.Services.HistoryLikeRepository;
 using Library.Services.QuestionRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace Library.Controllers
     public class QuestionSubejctController : ControllerBase
     {
         private readonly IQuestionSubjectRepository questionSubjectRepository;
+        private readonly IHistoryLikeRepository historyLikeRepository;
 
-        public QuestionSubejctController(IQuestionSubjectRepository questionSubjectRepository) 
+        public QuestionSubejctController(IQuestionSubjectRepository questionSubjectRepository,IHistoryLikeRepository historyLikeRepository) 
         { 
             this.questionSubjectRepository=questionSubjectRepository;
+            this.historyLikeRepository=historyLikeRepository;
         }
         [HttpPost]
         public async Task<IActionResult> CreateQuestionSubject(QuestionSubejctModel model)
@@ -52,7 +55,7 @@ namespace Library.Controllers
                 {
                     return NotFound();
                 }
-                await questionSubjectRepository.LikeQuestion(Id);
+                
                 return Ok(BaseReponsitory<string>.WithMessage("Thích thành công", 200));
             }
             catch

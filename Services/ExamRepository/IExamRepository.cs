@@ -17,12 +17,15 @@ namespace Library.Services.ExamRepository
     }
     public interface IExamRepository
     {
-        Task<List<ExamDTO>> GetAllExam(int? subjectId);
+        Task<List<ExamDTO>> GetAllExam(int? subjectId,string? teacherId,status? status);
         Task CreateExamMultipleChoice(ExamMupliteChoiceModel model);
         Task<ExamDetailDTO> getExam(int Id);
         Task CreateExamEssay(ExamEssayModel model);
         Task<ExamEssayDTO> getExamEssay(int Id);
         Task RandomExam(RanDomExamModel model);
+        Task UploadExam(ExamModel model);
+        Task DeleteExam(int id);
+        Task RenameFile(int id,string name);
 
     }
 }

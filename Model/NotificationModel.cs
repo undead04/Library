@@ -1,14 +1,10 @@
-﻿namespace Library.Data
+﻿namespace Library.Model
 {
-    public class Notification
+    public class NotificationModel
     {
-        public int Id { get; set; }
         public string UserId { get; set; } = string.Empty;
         public DateTime CreateDate { get; set; }
         public string Content { get; set; } = string.Empty;
-       
-        public ICollection<MyNotification>? myNotifications { get; set; }
-
-
+        
     }
 }

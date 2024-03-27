@@ -3,7 +3,9 @@ using Library.DTO;
 using Library.Model;
 using Library.Services.ExcelService;
 using Library.Services.MultipleChoiceRepository;
+using Library.Services.UploadService;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Library.Services.ExamRepository
 {
@@ -12,23 +14,27 @@ namespace Library.Services.ExamRepository
         private readonly MyDB context;
         private readonly IMultipleChoiceRepository multipleChoiceRepository;
         private readonly IExcelService excelService;
+        private readonly IUploadService uploadService;
 
-        public ExamRepository(MyDB context,IMultipleChoiceRepository multipleChoiceRepository,IExcelService excelService) 
+        public ExamRepository(MyDB context,IMultipleChoiceRepository multipleChoiceRepository,IExcelService excelService,IUploadService uploadService) 
         { 
             this.context=context;
             this.multipleChoiceRepository = multipleChoiceRepository;
             this.excelService = excelService;
+            this.uploadService = uploadService;
         } 
         public async Task CreateExamMultipleChoice(ExamMupliteChoiceModel model)
         {
             var exam = new Exam
             {
                 Form="Trắc nghiệm",
-                Name=model.Name,
+                Name=model.Name+".xlsx",
                 Time=model.Time,
                 Create_At=DateTime.Now,
                 UserId=model.UserId,
-                Subjectid=model.SubjectId
+                Subjectid=model.SubjectId,
+                Type=".xlsx"
+                
             };
             await context.exams.AddAsync(exam);
             await context.SaveChangesAsync();
@@ -38,7 +44,6 @@ namespace Library.Services.ExamRepository
                 var questionModel = new QuestionModel
                 {
                     CreateUserId = questions.CreateUserId,
-                    Create_at = questions.Create_at,
                     Context = questions.Context,
                     Level = questions.Level,
                     SubjectId = questions.SubjectId,
@@ -57,16 +62,26 @@ namespace Library.Services.ExamRepository
                 await context.SaveChangesAsync();
             }
             await excelService.CreateExcel(exam.Name,listQuestionId);
+            
+
 
         }
 
-        public async Task<List<ExamDTO>> GetAllExam(int? subjectid)
+        public async Task<List<ExamDTO>> GetAllExam(int? subjectid,string? teacherId, status? status)
         {
 
             var exam =  context.exams.Include(f=>f.applicationUsers).AsQueryable();
             if(subjectid.HasValue)
             {
                 exam=exam.Where(x=>x.Subjectid == subjectid);
+            }
+            if(!string.IsNullOrEmpty(teacherId))
+            {
+                exam = exam.Where(ex => ex.UserId == teacherId);
+            }
+            if(status.HasValue)
+            {
+                exam = exam.Where(ex => ex.Status == status.Value.ToString());
             }
             return await exam.Select(x => new ExamDTO
             {
@@ -95,6 +110,7 @@ namespace Library.Services.ExamRepository
                 Name = exam.Name,
                 Form = exam.Form,
                 Time = exam.Time,
+                Status=exam.Status,
                 questionDetails = exam.QuestionExams==null?null: exam.QuestionExams.Select(x => new QuestionDetail
                 {
                     context=x.Question!.Context,
@@ -112,14 +128,17 @@ namespace Library.Services.ExamRepository
             var exam = new Exam
             {
                 Form = "Tự luận",
-                Name = model.Name,
+                Name = model.Name+".docx",
                 Time = model.Time,
                 Create_At = DateTime.Now,
                 UserId = model.UserId,
-                Subjectid=model.SubjectId
+                Subjectid=model.SubjectId,
+                Type=".docx"
+                
             };
             await context.exams.AddAsync(exam);
             await context.SaveChangesAsync();
+            List<int> questionId = new List<int>();
             foreach(var question in model.Context!)
             {
                 var examEssay = new EssayExam
@@ -129,8 +148,10 @@ namespace Library.Services.ExamRepository
                 };
                 await context.essayExams.AddAsync(examEssay);
                 await context.SaveChangesAsync();
+                questionId.Add(examEssay.Id);
                 
             }
+            await excelService.CreateWord(model.Name, questionId);
 
         }
         public async Task<ExamEssayDTO> getExamEssay(int Id)
@@ -217,6 +238,81 @@ namespace Library.Services.ExamRepository
                     
                     
                 }
+            }
+        }
+
+        public async Task UploadExam(ExamModel model)
+        {
+            var exam = new Exam
+            {
+                Time="45 phút",
+                Create_At = DateTime.Now,
+                UserId = model.UserId,
+                Subjectid = model.SubjectId,
+                Name=model.File!.FileName,
+            };
+            await context.exams.AddAsync(exam);
+            await context.SaveChangesAsync();
+            string nameExam =await uploadService.UploadImage("Exam", model.File!);
+            string typeFile = uploadService.GetExtensionFile("Exam", nameExam);
+            exam.Type = typeFile;
+
+            if (!string.IsNullOrEmpty(model.Name))
+            {
+                string newName = model.Name + $"{typeFile}";
+                uploadService.RenameImage("Exam", exam.Name,newName);
+                exam.Name = newName;
+
+            }
+            await context.SaveChangesAsync();
+            string filePath = uploadService.GetFilePath("Exam", exam.Name);
+            if (typeFile == ".xlsx")
+            {
+                exam.Form = "Trắc nghiệm";
+                var listQuestionId= await excelService.GetExcel(model.SubjectId,model.UserId, filePath);
+                foreach(var questionId in listQuestionId)
+                {
+                    var questionExam = new QuestionExam
+                    {
+                        Examid=exam.Id,
+                        QuestionId=questionId,
+                    };
+                    await context.questionExams.AddAsync(questionExam);
+                    await context.SaveChangesAsync();
+                }
+
+            }
+            else
+            {
+                exam.Form = "Tự luận";
+                await excelService.GetWord(exam.Id, filePath);
+            }
+            await context.SaveChangesAsync();
+
+        }
+
+        public async Task DeleteExam(int id)
+        {
+            var exam = await context.exams.FirstOrDefaultAsync(ex => ex.Id == id);
+            if(exam!=null)
+            {
+                if (exam.Status == StatusExam.Cancel.ToString())
+                {
+                    context.Remove(exam);
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task RenameFile(int id, string name)
+        {
+            var exam = await context.exams.FirstOrDefaultAsync(ex => ex.Id == id);
+            if (exam != null)
+            {
+                string newName = $"{name}{exam.Type}";
+                uploadService.RenameImage("Exam", exam.Name, newName);
+                exam.Name = newName;
+                await context.SaveChangesAsync();
             }
         }
     }

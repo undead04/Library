@@ -33,6 +33,9 @@ namespace Library.Data
         public DbSet<EssayExam> essayExams { get; set; }
         public DbSet<HistoryLike> historyLikes { get; set; }
         public DbSet<PrivateFile> privateFiles { get; set; }
+        public DbSet<SystemNotification> systemNotifications { get; set; }
+        public DbSet<Notification> notifications { get; set; }
+        public DbSet<MyNotification> myNotifications { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -77,6 +80,10 @@ namespace Library.Data
                 e.HasMany(e => e.HistoryLikes)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(e=>e.systemNotifications)
+                .WithOne(e=>e.User)
+                .HasForeignKey<SystemNotification>(e => e.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
             });
             builder.Entity<Major>(e =>
@@ -256,7 +263,19 @@ namespace Library.Data
             {
                 e.HasKey(e => new { e.UserId, e.SubjectQuestionId });
             });
+            builder.Entity<MyNotification>(e =>
+            {
+                e.HasKey(e => new { e.UserId, e.NotificationId });
+                e.HasOne(e => e.User)
+                .WithMany(e => e.myNotifications)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasOne(e => e.Notification)
+                .WithMany(e => e.myNotifications)
+                .HasForeignKey(e => e.NotificationId)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            });
 
 
 

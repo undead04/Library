@@ -1,6 +1,8 @@
 ﻿using Library.DTO;
 using Library.Model;
+using Library.Services.ExcelService;
 using Library.Services.MultipleChoiceRepository;
+using Library.Services.UploadService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +13,14 @@ namespace Library.Controllers
     public class QuestionController : ControllerBase
     {
         private readonly IMultipleChoiceRepository repository;
+        private readonly IExcelService excelService;
+        private readonly IUploadService uploadService;
 
-        public QuestionController(IMultipleChoiceRepository repository)
+        public QuestionController(IMultipleChoiceRepository repository, IExcelService excelService,IUploadService uploadService)
         {
             this.repository = repository;
+            this.excelService = excelService;
+            this.uploadService = uploadService;
         }
         [HttpPost]
         public async Task<IActionResult> CreateQuestion(QuestionModel model)
@@ -22,6 +28,21 @@ namespace Library.Controllers
             try
             {
                 await repository.CreateQuestion(model);
+                return Ok(BaseReponsitory<string>.WithMessage("Tạo thành công", 200));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost("Upload")]
+        public async Task<IActionResult> UploadQuestion([FromForm]UploadQuestionModel model)
+        {
+            try
+            {
+                string nameFile = await uploadService.UploadImage("Question", model.File!);
+                string filePath = uploadService.GetFilePath("Question", nameFile);
+                await excelService.GetExcel(model.SubjectId, model.CreateUserId, filePath);
                 return Ok(BaseReponsitory<string>.WithMessage("Tạo thành công", 200));
             }
             catch

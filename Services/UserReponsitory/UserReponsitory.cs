@@ -2,6 +2,7 @@
 using Library.DTO;
 using Library.Model;
 using Library.Services.ReissuePassword;
+using Library.Services.SystemNotificationRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Utilities;
@@ -18,8 +19,10 @@ namespace Library.Services.UserReponsitory
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IReissuePassword reissuePassword;
+        private readonly ISystemNotificationRepository systemNotificationRepository;
 
-        public UserReponsitory(MyDB context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IReissuePassword reissuePassword)
+        public UserReponsitory(MyDB context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, 
+            IReissuePassword reissuePassword,ISystemNotificationRepository systemNotificationRepository)
         {
             this.context = context;
             this.userManager = userManager;
@@ -27,6 +30,7 @@ namespace Library.Services.UserReponsitory
             this.signInManager = signInManager;
             this.roleManager = roleManager;
             this.reissuePassword = reissuePassword;
+            this.systemNotificationRepository = systemNotificationRepository;
 
         }
         public async Task<UserDTO> GetUser()
@@ -98,9 +102,31 @@ namespace Library.Services.UserReponsitory
         public async Task DeleteUser(string id)
         {
             var user = await userManager.FindByIdAsync(id);
+           
             if (user != null)
             {
+                var nameListRole = await userManager.GetRolesAsync(user);
+                string nameRole = string.Join("", nameListRole);
+                if(nameRole==AppRole.Teacher)
+                {
+                    var teacher = await context.tearchers.FirstOrDefaultAsync(te => te.UserId == user.Id);
+                    if(teacher != null)
+                    {
+                        context.tearchers.Remove(teacher);
+                        await context.SaveChangesAsync();
+                    }
+                }
+                if (nameRole == AppRole.Student)
+                {
+                    var student = await context.students.FirstOrDefaultAsync(te => te.UserId == user.Id);
+                    if (student != null)
+                    {
+                        context.students.Remove(student);
+                        await context.SaveChangesAsync();
+                    }
+                }
                 await userManager.DeleteAsync(user);
+                await userManager.UpdateAsync(user);
             }
         }
         public async Task<UserDTO> GetUserById(string id)
@@ -138,7 +164,7 @@ namespace Library.Services.UserReponsitory
             var role = await roleManager.FindByIdAsync(model.RoleId);
             if (result.Succeeded)
             {
-                if (await roleManager.RoleExistsAsync(role.Name))
+                if (!await roleManager.RoleExistsAsync(role.Name))
                 {
                     await userManager.AddToRoleAsync(user, role.Name);
                 }
@@ -151,6 +177,17 @@ namespace Library.Services.UserReponsitory
                             ClassRoomId = model.ClassRoomId,
                             MajorId = model.MajorsId,
                         };
+                        var systemNotification = new SystemNotificationModel
+                        {
+                            IsChangePassword=true,
+                            IsUpdateInformationUser=true,
+                            IsCommentNotification=true,
+                            IsCreateNotificationSubject=true,
+                            IsCommentMyQuestion=true,
+                            IsTeacherQuestionSubject=true,
+                            UserId= user.Id,
+                        };
+                        await systemNotificationRepository.CreateSystemNotification(systemNotification);
                         await context.students.AddAsync(student);
                         await context.SaveChangesAsync();
                         break;
@@ -162,7 +199,38 @@ namespace Library.Services.UserReponsitory
                         };
                         await context.tearchers.AddAsync(teacher);
                         await context.SaveChangesAsync();
+                        var systemNotificationTeacher = new SystemNotificationModel
+                        {
+                            IsChangePassword = true,
+                            IsUpdateInformationUser = true,
+                            UserId = user.Id,
+                            IscrudExam=true,
+                            IscrudQuestion=true,
+                            IscrudLesson=true,
+                            IscrudResource=true,
+                            IsCommentNotification=true,
+                           IsCommentMyQuestion=true,
+                           IscrudDocument=true,
+                        };
+                        await systemNotificationRepository.CreateSystemNotification(systemNotificationTeacher);
                         break;
+                    case AppRole.Leader:
+                        var systemNotificationLeader = new SystemNotificationModel
+                        {
+                            IsChangePassword = true,
+                            IsUpdateInformationUser = true,
+                            UserId = user.Id,
+                            IsChangleListRole=true,
+                            IsChangeLeListUser=true,
+                            IsCancelExam=true,
+                            IsSaveExam=true,
+                            IsCrudPrivateFile=true,
+                            IsContentSubject=true,
+                            IsListSUbject=true,
+                        };
+                        await systemNotificationRepository.CreateSystemNotification(systemNotificationLeader);
+                        break;
+
                 }
 
             }

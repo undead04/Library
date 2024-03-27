@@ -88,10 +88,10 @@ namespace Library.Services.PrivateFileRepository
                 };
                 await context.privateFiles.AddAsync(privateFile);
                 await context.SaveChangesAsync();
-                var nameFile =await uploadService.UploadImage(privateFile.Id, "PrivateFile", file);
+                var nameFile =await uploadService.UploadImage("PrivateFile", file);
                 privateFile.Name = nameFile;
-                privateFile.Type = uploadService.GetExtensionFile("PrivateFile", file);
-                privateFile.Size = uploadService.GetSizeFile("PrivateFile", file);
+                privateFile.Type = uploadService.GetExtensionFile("PrivateFile", nameFile);
+                privateFile.Size = uploadService.GetSizeFile("PrivateFile", nameFile);
                 await context.SaveChangesAsync();
             }
         }

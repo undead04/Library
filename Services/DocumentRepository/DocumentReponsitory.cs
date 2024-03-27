@@ -36,10 +36,11 @@ namespace Library.Services.DocumentRepository
                 };
                 await context.documents.AddAsync(document);
                 await context.SaveChangesAsync();
-                var fileName= await uploadService.UploadImage(document.Id, "Document", file);
+                var fileName= await uploadService.UploadImage( "Document", file);
                 document.Name=fileName;
-                document.Type = uploadService.GetExtensionFile("Document",file);
-                document.Size = uploadService.GetSizeFile("Document", file);
+                await context.SaveChangesAsync();
+                document.Type = uploadService.GetExtensionFile("Document",document.Name);
+                document.Size = uploadService.GetSizeFile("Document", document.Name);
                 await context.SaveChangesAsync();
                 documnetId.Add(document.Id);
             }

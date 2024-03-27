@@ -13,9 +13,9 @@ namespace Library.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountReponsitory accountRepo;
-        private readonly MyDB context;
+       
 
-        public AccountController(IAccountReponsitory repo,MyDB context)
+        public AccountController(IAccountReponsitory repo)
         {
             accountRepo = repo;
            

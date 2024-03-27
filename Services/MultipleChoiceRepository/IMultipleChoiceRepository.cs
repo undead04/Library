@@ -10,5 +10,6 @@ namespace Library.Services.MultipleChoiceRepository
         Task DeleteQuestion(int Id);
         Task<QuestionDetail> GetQuestion(int Id);
         Task UpdateQuestion(int Id,QuestionModel model);
+        
     }
 }
