@@ -43,7 +43,6 @@ namespace Library.Services.ResourceReponsitory
             var documentModel = new DocumentModel
             {
                 Classify = TypeDocument.Resource,
-                UserId = model.CreateUserId,
                 SubjectId = model.SubjectId,
                 File=model.File
             };

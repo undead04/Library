@@ -2,6 +2,7 @@
 using Library.DTO;
 using Library.Model;
 using Library.Services.ClassLessonRepository;
+using Library.Services.JWTService;
 using Library.Services.UploadService;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
@@ -15,16 +16,19 @@ namespace Library.Services.DocumentRepository
         public  IUploadService uploadService { get; set; }
 
         private readonly IClassLessonRepository classLessonRepository;
+        private readonly IJWTSevice jwtService;
 
-        public DocumentReponsitory(MyDB context,IUploadService uploadService,IClassLessonRepository classLessonRepository)
+        public DocumentReponsitory(MyDB context,IUploadService uploadService,IClassLessonRepository classLessonRepository,IJWTSevice jWTSevice)
         {
             this.context = context;
             this.uploadService=uploadService;
             this.classLessonRepository = classLessonRepository;
+            this.jwtService = jWTSevice;
         }
         public async Task<List<int>> CreateDocumentLesson(DocumentModel model)
         {
             var documnetId=new List<int>();
+            var userId =await jwtService.ReadToken();
             foreach(var file in model.File)
             {
                 var document = new Data.Document
@@ -32,7 +36,7 @@ namespace Library.Services.DocumentRepository
                     Create_at = DateTime.Now,
                     Classify = model.Classify,
                     SubjectId = model.SubjectId,
-                    CreateUserId=model.UserId
+                    CreateUserId= userId,
                 };
                 await context.documents.AddAsync(document);
                 await context.SaveChangesAsync();

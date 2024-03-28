@@ -3,6 +3,7 @@ using Library.Data;
 using Library.DTO;
 using Library.Model;
 using Library.Services.ExcelService;
+using Library.Services.JWTService;
 using Library.Services.UploadService;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,18 +12,22 @@ namespace Library.Services.MultipleChoiceRepository
     public class MultipleChoiceRepository : IMultipleChoiceRepository
     {
         private readonly MyDB context;
+        private readonly IJWTSevice jWTSevice;
 
-        public MultipleChoiceRepository(MyDB context) 
+        public MultipleChoiceRepository(MyDB context,IJWTSevice jWTSevice) 
         {
             this.context = context;
-            
-            
+            this.jWTSevice=jWTSevice;
+
+
+
         }
         public async Task<int> CreateQuestion(QuestionModel model)
         {
+            var userId =await jWTSevice.ReadToken();
             var question = new Question
             {
-                CreateUserId = model.CreateUserId,
+                CreateUserId = userId,
                 Context = model.Context,
                 Level=model.Level,
                 SubjectId=model.SubjectId,

@@ -2,6 +2,7 @@
 using Library.Model;
 using Library.Services.HistoryLikeRepository;
 using Library.Services.QuestionRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,7 @@ namespace Library.Controllers
             this.historyLikeRepository=historyLikeRepository;
         }
         [HttpPost]
+        [Authorize(Policy ="SubjectView")]
         public async Task<IActionResult> CreateQuestionSubject(QuestionSubejctModel model)
         {
             try
@@ -33,6 +35,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("subject/{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> GetAll(int Id,string? search, int? classRoomId, int? lessonId, string? OrderBy, string? FilterQuestion)
         {
             try
@@ -46,6 +49,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("Like/{Id}")]
+        [Authorize(Policy = "SubjectEdit")]
         public async Task<IActionResult> LikeQuestion(int Id)
         {
             try
@@ -64,6 +68,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> GetQuestion(int Id)
         {
             try

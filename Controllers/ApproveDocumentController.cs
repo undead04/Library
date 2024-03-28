@@ -2,6 +2,8 @@
 using Library.Model;
 using Library.Services.ApproveDocumetService;
 using Library.Services.DocumentRepository;
+using Library.Services.JWTService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,16 +15,19 @@ namespace Library.Controllers
     {
         private readonly IApproveDocumetService approveDocumetService;
         private readonly IDocumentReponsitory documentReponsitory;
+        private readonly IJWTSevice jwtService;
 
-        public ApproveDocumentController(IApproveDocumetService approveDocumetService,IDocumentReponsitory documentReponsitory) 
+        public ApproveDocumentController(IApproveDocumetService approveDocumetService,IDocumentReponsitory documentReponsitory,IJWTSevice jWTSevice) 
         { 
             this.approveDocumetService=approveDocumetService;
             this.documentReponsitory = documentReponsitory;
+            this.jwtService = jWTSevice;
 
 
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Approve(int id,string userid)
+        [Authorize(Policy ="DocumentEdit")]
+        public async Task<IActionResult> Approve(int id)
         {
             try
             {
@@ -31,7 +36,8 @@ namespace Library.Controllers
                 {
                     return NotFound();
                 }
-                await approveDocumetService.Approve(id,userid);
+                string userId = await jwtService.ReadToken();
+                await approveDocumetService.Approve(id, userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Phê duyệt thành công", 200));
             }
             catch
@@ -40,7 +46,8 @@ namespace Library.Controllers
             }
         }
         [HttpPut("cancel/{id}")]
-        public async Task<IActionResult> ApproveCancel(int id,ApproveCancelDocumentModel model)
+        [Authorize(Policy = "DocumentEdit")]
+        public async Task<IActionResult> ApproveCancel(int id, [FromBody] string note)
         {
             try
             {
@@ -49,7 +56,8 @@ namespace Library.Controllers
                 {
                     return NotFound();
                 }
-                await approveDocumetService.Cancel(id,model);
+                string userId = await jwtService.ReadToken();
+                await approveDocumetService.Cancel(id,userId,note);
                 return Ok(BaseReponsitory<string>.WithMessage("Phê duyệt thành công", 200));
             }
             catch

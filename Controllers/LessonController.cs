@@ -1,6 +1,7 @@
 ﻿using Library.DTO;
 using Library.Model;
 using Library.Services.LessonReponsitory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 
@@ -17,6 +18,7 @@ namespace Library.Controllers
             this.reponsitory = reponsitory;
         }
         [HttpPost]
+        [Authorize(Policy ="DocumentCreate")]
         public async Task<IActionResult> CreateLesson([FromForm]LessonModel model)
         {
             try
@@ -30,6 +32,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("topic/{Id}")]
+        [Authorize(Policy = "DocumentView")]
         public async Task<IActionResult> GetAllLesson(int Id,int?ClassId)
         {
             try
@@ -43,6 +46,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
+        [Authorize(Policy = "DocumentView")]
         public async Task<IActionResult> getLessonById(int Id)
         {
             try
@@ -56,6 +60,7 @@ namespace Library.Controllers
             }
         }
         [HttpDelete("{Id}")]
+        [Authorize(Policy = "DocumentDelete")]
         public async Task<IActionResult> DeleteLesson(int Id)
         {
             try
@@ -69,6 +74,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("{Id}")]
+        [Authorize(Policy = "DocumentEdit")]
         public async Task<IActionResult> UpdateLesson(int Id,LessonModel model)
         {
             try
@@ -82,6 +88,7 @@ namespace Library.Controllers
             }
         }
         [HttpPost("addDocument")]
+        [Authorize(Policy = "DocumentCreate")]
         public async Task<IActionResult> AddDocumentLesson(AddDocumentLessonModel model)
         {
             try

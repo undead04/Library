@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using Library.DTO;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Library.Controllers
 {
     [Route("api/[controller]")]
@@ -17,6 +19,7 @@ namespace Library.Controllers
             this.repository = repository;
         }
         [HttpPost]
+        [Authorize(Policy ="SubjectEdit")]
         public async Task<IActionResult> CreateReplyQuestion(ReplyModel model)
         {
             try
@@ -30,6 +33,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("Question/{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> GetAllReplyQuestion(int Id)
         {
             try
@@ -43,6 +47,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> getReplyQuestion(int Id)
         {
             try
@@ -60,6 +65,7 @@ namespace Library.Controllers
             }
         }
         [HttpDelete("{Id}")]
+        [Authorize(Policy = "SubjectEdit")]
         public async Task<IActionResult> DeleteReplyQuestion(int Id)
         {
             try
@@ -78,6 +84,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("{Id}")]
+        [Authorize(Policy = "SubjectEdit")]
         public async Task<IActionResult> UpdateReplyQuestion(int Id,ReplyUpdateModel model)
         {
             try

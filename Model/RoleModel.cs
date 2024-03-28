@@ -36,6 +36,7 @@ namespace Library.Model
         public bool IsDelete { get; set; }
         public bool IsDownload { get; set; }
         public bool IsAdd { get; set; }
+        
     }
     public class ClaimExam
     {

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Library.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Library.Services.ClaimsService
 {
     public interface IClaimService
     {
-        Task CreateClaims(IdentityRole role, string claimsType, string claimsValue);
-        Task<IdentityRole> DeleteClaims(IdentityRole role);
+        Task CreateClaims(Role role, string claimsType, string claimsValue);
+        Task<IdentityRole> DeleteClaims(Role role);
     }
 }

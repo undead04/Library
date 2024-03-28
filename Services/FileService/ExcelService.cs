@@ -132,7 +132,7 @@ namespace Library.Services.ExcelService
                     
                     var questionModel = new QuestionModel
                     {
-                        CreateUserId = UserId,
+                       
                         Context = worksheet.Cells[row, 2].Value?.ToString(),
                         Level = worksheet.Cells[row, 1].Value?.ToString(),
                         SubjectId =subjectId,

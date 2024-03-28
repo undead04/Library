@@ -2,6 +2,7 @@
 using Library.DTO;
 using Library.Model;
 using Library.Services.ExcelService;
+using Library.Services.JWTService;
 using Library.Services.MultipleChoiceRepository;
 using Library.Services.UploadService;
 using Microsoft.EntityFrameworkCore;
@@ -15,23 +16,26 @@ namespace Library.Services.ExamRepository
         private readonly IMultipleChoiceRepository multipleChoiceRepository;
         private readonly IExcelService excelService;
         private readonly IUploadService uploadService;
+        private readonly IJWTSevice jWTSevice;
 
-        public ExamRepository(MyDB context,IMultipleChoiceRepository multipleChoiceRepository,IExcelService excelService,IUploadService uploadService) 
+        public ExamRepository(MyDB context,IMultipleChoiceRepository multipleChoiceRepository,IExcelService excelService,IUploadService uploadService,IJWTSevice jWTSevice) 
         { 
             this.context=context;
             this.multipleChoiceRepository = multipleChoiceRepository;
             this.excelService = excelService;
             this.uploadService = uploadService;
+            this.jWTSevice = jWTSevice;
         } 
         public async Task CreateExamMultipleChoice(ExamMupliteChoiceModel model)
         {
+            var userId =await jWTSevice.ReadToken();
             var exam = new Exam
             {
                 Form="Trắc nghiệm",
                 Name=model.Name+".xlsx",
                 Time=model.Time,
                 Create_At=DateTime.Now,
-                UserId=model.UserId,
+                UserId= userId,
                 Subjectid=model.SubjectId,
                 Type=".xlsx"
                 
@@ -43,7 +47,6 @@ namespace Library.Services.ExamRepository
             {
                 var questionModel = new QuestionModel
                 {
-                    CreateUserId = questions.CreateUserId,
                     Context = questions.Context,
                     Level = questions.Level,
                     SubjectId = questions.SubjectId,
@@ -99,6 +102,7 @@ namespace Library.Services.ExamRepository
             var exam = await context.exams.Include(f => f.QuestionExams)!
                 .ThenInclude(x => x.Question)
                 .ThenInclude(f => f!.Answers)
+                .Include(f=>f.Subject)
                 .FirstOrDefaultAsync(ex => ex.Id == Id);
 
             if (exam == null)
@@ -111,6 +115,7 @@ namespace Library.Services.ExamRepository
                 Form = exam.Form,
                 Time = exam.Time,
                 Status=exam.Status,
+                NameSubject=exam.Subject!.Name,
                 questionDetails = exam.QuestionExams==null?null: exam.QuestionExams.Select(x => new QuestionDetail
                 {
                     context=x.Question!.Context,
@@ -125,13 +130,14 @@ namespace Library.Services.ExamRepository
         }
         public async Task CreateExamEssay(ExamEssayModel model)
         {
+            var userid = await jWTSevice.ReadToken();
             var exam = new Exam
             {
                 Form = "Tự luận",
                 Name = model.Name+".docx",
                 Time = model.Time,
                 Create_At = DateTime.Now,
-                UserId = model.UserId,
+                UserId = userid,
                 Subjectid=model.SubjectId,
                 Type=".docx"
                 
@@ -179,7 +185,7 @@ namespace Library.Services.ExamRepository
         public async Task RandomExam(RanDomExamModel model)
         {
             Random random = new Random();
-
+            var userId = await jWTSevice.ReadToken();
             for (int i=1;i<=model.QuatityExam;i++)
             {
                 var exam = new Exam
@@ -188,7 +194,7 @@ namespace Library.Services.ExamRepository
                     Name=model.Name,
                     Subjectid=model.SubjectId,
                     Time="45",
-                    UserId=model.Userid,
+                    UserId=userId,
                     Create_At=DateTime.Now.Date,
                 };
                 await context.exams.AddAsync(exam);
@@ -243,11 +249,12 @@ namespace Library.Services.ExamRepository
 
         public async Task UploadExam(ExamModel model)
         {
+            var userid = await jWTSevice.ReadToken();
             var exam = new Exam
             {
                 Time="45 phút",
                 Create_At = DateTime.Now,
-                UserId = model.UserId,
+                UserId = userid,
                 Subjectid = model.SubjectId,
                 Name=model.File!.FileName,
             };
@@ -269,7 +276,7 @@ namespace Library.Services.ExamRepository
             if (typeFile == ".xlsx")
             {
                 exam.Form = "Trắc nghiệm";
-                var listQuestionId= await excelService.GetExcel(model.SubjectId,model.UserId, filePath);
+                var listQuestionId= await excelService.GetExcel(model.SubjectId,userid, filePath);
                 foreach(var questionId in listQuestionId)
                 {
                     var questionExam = new QuestionExam

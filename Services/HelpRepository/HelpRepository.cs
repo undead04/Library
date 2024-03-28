@@ -1,6 +1,7 @@
 ﻿using Library.Data;
 using Library.DTO;
 using Library.Model;
+using Library.Services.JWTService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services.HelpRepository
@@ -8,17 +9,20 @@ namespace Library.Services.HelpRepository
     public class HelpRepository : IHelpRepository
     {
         private readonly MyDB context;
+        private readonly IJWTSevice jWTSevice;
 
-        public HelpRepository(MyDB context) 
+        public HelpRepository(MyDB context,IJWTSevice jWTSevice) 
         {
             this.context = context;
+            this.jWTSevice=jWTSevice;
         }
         public async Task CreateHelp(HelpModel model)
         {
+            var userId = await jWTSevice.ReadToken();
             var help = new Help
             {
                 Create_At = DateTime.Now,
-                UserId= model.UserId,
+                UserId= userId,
                 Context=model.Context,
             };
             await context.helps.AddAsync(help);

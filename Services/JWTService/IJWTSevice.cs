@@ -4,6 +4,6 @@ namespace Library.Services.JWTService
 {
     public interface IJWTSevice
     {
-        Task<ApplicationUser> ReadToken();
+        Task<string> ReadToken();
     }
 }

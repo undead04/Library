@@ -26,7 +26,6 @@ namespace Library.Services.LessonReponsitory
             var documentModel = new DocumentModel
             {
                 Classify=TypeDocument.Lesson,
-                UserId=model.CreateUserId,
                 SubjectId=model.SubjectId,
                 File=model.File,
             };

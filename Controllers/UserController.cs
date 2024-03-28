@@ -1,6 +1,9 @@
 ﻿using FluentValidation.Results;
 using Library.DTO;
 using Library.Model;
+using Library.Services.JWTService;
+using Library.Services.RoleReponsitory;
+using Library.Services.UploadService;
 using Library.Services.UserReponsitory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +17,18 @@ namespace Library.Controllers
     {
         private readonly IUserReponsitory userReponsitory;
         private readonly ChanglePassWordValidation validation;
+        private readonly IJWTSevice jwtService;
+        private readonly IUploadService uploadservice;
+        private readonly IRoleReponsitory roleRepository;
 
-        public UserController(IUserReponsitory userReponsitory, ChanglePassWordValidation validation)
+        public UserController(IUserReponsitory userReponsitory, ChanglePassWordValidation validation,IJWTSevice jWTSevice,IUploadService uploadService,IRoleReponsitory roleReponsitory)
         {
 
             this.userReponsitory = userReponsitory;
             this.validation = validation;
+            this.jwtService = jWTSevice;
+            this.uploadservice = uploadService;
+            this.roleRepository = roleReponsitory;
         }
         [HttpGet]
         [Authorize]
@@ -27,7 +36,8 @@ namespace Library.Controllers
         {
             try
             {
-                var user = await userReponsitory.GetUser();
+                var userId = await jwtService.ReadToken();
+                var user = await userReponsitory.GetUserById(userId);
                 return Ok(BaseReponsitory<UserDTO>.WithData(user, 200));
             }
             catch
@@ -47,7 +57,8 @@ namespace Library.Controllers
                     return BadRequest(BaseReponsitory<Dictionary<string, string>>.WithMessage(result.Errors.ToDictionary(e => e.PropertyName, e => e.ErrorMessage), 400));
 
                 }
-                await userReponsitory.ChanglePassWord(model);
+                var userId = await jwtService.ReadToken();
+                await userReponsitory.ChanglePassWord(model,userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Đổi mật khẩu thành công", 200));
             }
             catch
@@ -61,7 +72,8 @@ namespace Library.Controllers
         {
             try
             {
-                await userReponsitory.UpdateImage(Avatar);
+                var userId=await jwtService.ReadToken();
+                await userReponsitory.UpdateImage(Avatar, userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Đổi  ảnh đại diện thành công", 200));
             }
             catch
@@ -75,7 +87,8 @@ namespace Library.Controllers
         {
             try
             {
-                await userReponsitory.DeleteImage();
+                var userId= await jwtService.ReadToken();
+                await userReponsitory.DeleteImage(userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Xóa ảnh đại diện thành công", 200));
             }
             catch
@@ -84,11 +97,19 @@ namespace Library.Controllers
             }
         }
         [HttpGet("All")]
-        public async Task<IActionResult> GetAllUser()
+        public async Task<IActionResult> GetAllUser(string? search,string?roleId)
         {
             try
             {
-                var user = await userReponsitory.GetAllUser();
+                if(!string.IsNullOrEmpty(roleId))
+                {
+                    var role=roleRepository.GetById(roleId);
+                    if(role==null)
+                    {
+                        return NotFound();
+                    }
+                }
+                var user = await userReponsitory.GetAllUser(search,roleId);
                 return Ok(BaseReponsitory<List<UserDTO>>.WithData(user, 200));
             }
             catch
@@ -153,20 +174,6 @@ namespace Library.Controllers
 
                 await userReponsitory.CreateUser(model);
                 return Ok(BaseReponsitory<string>.WithMessage("Thêm người dùng thành công", 200));
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        [HttpGet("FilterSearch")]
-        public async Task<IActionResult> FilterSearch(string? search, int[]? RoleId)
-        {
-            try
-            {
-
-                var user = await userReponsitory.Search(search, RoleId);
-                return Ok(BaseReponsitory<List<UserDTO>>.WithData(user, 200));
             }
             catch
             {

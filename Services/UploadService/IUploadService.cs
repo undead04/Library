@@ -9,6 +9,7 @@
         void RenameImage(string ProCode, string oldName,string newName);
         string GetExtensionFile(string ProCode,string name);
         string GetSizeFile(string ProCode,string name);
-        
+        Task<(byte[], string, string)> DownloadFile(string FileName,string Procode);
+
     }
 }

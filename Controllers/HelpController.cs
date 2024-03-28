@@ -1,6 +1,7 @@
 ﻿using Library.DTO;
 using Library.Model;
 using Library.Services.HelpRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace Library.Controllers
             this.repository = repository;
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateHelp(HelpModel model)
         {
             try
@@ -30,6 +32,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllHelp()
         {
             try
@@ -43,6 +46,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
+        [Authorize]
         public async Task<IActionResult> GetHelp(int Id)
         {
             try

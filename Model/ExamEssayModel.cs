@@ -2,7 +2,6 @@
 {
     public class ExamEssayModel
     {
-        public string UserId { get; set; } = string.Empty;
        
         public string Name { get; set; } = string.Empty;
         public int SubjectId { get; set; }

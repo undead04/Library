@@ -1,4 +1,6 @@
-﻿namespace Library.DTO
+﻿using Org.BouncyCastle.Bcpg.OpenPgp;
+
+namespace Library.DTO
 {
     public class UserDTO
     {
@@ -10,6 +12,10 @@
         public string Phone { get;set; } = string.Empty;
         public string Address { get; set; }=string.Empty;
         public string Avatar { get; set; } = string.Empty;
+        public string UrlAvatar { get; set; }=string.Empty;
+        public string Role { get; set; }=string.Empty;
+        public string Class { get; set; } = string.Empty;
+        public string Major { get; set; } = string.Empty;
         
     }
 }

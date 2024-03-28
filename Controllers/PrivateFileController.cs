@@ -3,6 +3,8 @@ using Library.Services.PrivateFileRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Library.Services.UploadService;
 
 namespace Library.Controllers
 {
@@ -11,14 +13,16 @@ namespace Library.Controllers
     public class PrivateFileController : ControllerBase
     {
         private readonly IPrivateFileRepository privateFileRepository;
+        private readonly IUploadService uploadService;
 
-        public PrivateFileController(IPrivateFileRepository privateFileRepository) 
+        public PrivateFileController(IPrivateFileRepository privateFileRepository,IUploadService uploadService) 
         {
             this.privateFileRepository=privateFileRepository;
-
+            this.uploadService = uploadService;
 
         }
         [HttpPost]
+        [Authorize(Policy ="PrivateView")]
         public async Task<IActionResult> UploadFile([FromForm]PrivateFileModel model)
         {
             try
@@ -33,6 +37,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet]
+        [Authorize(Policy = "PrivateView")]
         public async Task<IActionResult> GetAllPrivateFile()
         {
             try
@@ -47,6 +52,7 @@ namespace Library.Controllers
             }
         }
         [HttpDelete("{id}")]
+        [Authorize(Policy = "PrivateDelete")]
         public async Task<IActionResult> DeletePrivateFile(int id)
         {
             try
@@ -67,6 +73,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("{id}")]
+        [Authorize(Policy = "PrivateEdit")]
         public async Task<IActionResult> RenamePrivateFile(int id,string name)
         {
             try
@@ -80,6 +87,25 @@ namespace Library.Controllers
                 await privateFileRepository.RenamePrivateFile(id,name);
                 return Ok(BaseReponsitory<string>.WithMessage("đổi tên thành công", 200));
 
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("download/{Id}")]
+        [Authorize(Policy = "PrivateDownload")]
+        public async Task<IActionResult> DownloadPrivateFile(int Id)
+        {
+            try
+            {
+                var privateFile = await privateFileRepository.GetById(Id);
+                if (privateFile == null)
+                {
+                    return NotFound();
+                }
+                var result = await uploadService.DownloadFile(privateFile.Name, "Private");
+                return File(result.Item1, result.Item2, result.Item3);
             }
             catch
             {

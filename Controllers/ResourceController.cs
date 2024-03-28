@@ -3,6 +3,7 @@ using Library.Services.ResourceReponsitory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Library.Controllers
 {
@@ -17,6 +18,7 @@ namespace Library.Controllers
             this.resourceReponsitory=resourceReponsitory;
         }
         [HttpPost]
+        [Authorize(Policy ="DocumentCreate")]
         public async Task<IActionResult> CreateResource([FromForm]ResourceModel model)
         {
             try
@@ -30,6 +32,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("lesson/{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> getAllResourceLesson(int Id)
         {
             try
@@ -43,6 +46,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
+        [Authorize(Policy = "DocumentView")]
         public async Task<IActionResult> getResource(int Id)
         {
             try
@@ -60,6 +64,7 @@ namespace Library.Controllers
             }
         }
         [HttpPost("AddResourceDocument")]
+        [Authorize(Policy = "DocumentView")]
         public async Task<IActionResult> AddResourceDocument(AddDocumnetResourceModel model)
         {
             try

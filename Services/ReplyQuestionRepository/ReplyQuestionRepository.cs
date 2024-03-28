@@ -1,6 +1,7 @@
 ﻿using Library.Data;
 using Library.DTO;
 using Library.Model;
+using Library.Services.JWTService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services.ReplyQuestionRepository
@@ -8,17 +9,20 @@ namespace Library.Services.ReplyQuestionRepository
     public class ReplyQuestionRepository : IReplyQuestionRepository
     {
         private readonly MyDB context;
+        private readonly IJWTSevice jWTSevice;
 
-        public ReplyQuestionRepository(MyDB context) 
+        public ReplyQuestionRepository(MyDB context,IJWTSevice jWTSevice) 
         {
             this.context = context;
+            this.jWTSevice = jWTSevice;
         }
         public async Task CreateReplyQuestion(ReplyModel model)
         {
+            var userId = await jWTSevice.ReadToken();
             var replyQuestio = new ReplyQuestion
             {
                 Create_At = DateTime.Now.Date,
-                UserId=model.UserId,
+                UserId=userId,
                 QuestionId=model.QuestionId,
                 Context=model.Context,
             };

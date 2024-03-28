@@ -2,7 +2,7 @@
 {
     public class QuestionModel
     {
-        public string CreateUserId { get; set; } = string.Empty;
+        
        
         public string Context { get; set; } = string.Empty;
         public string Level { get; set; } = string.Empty;

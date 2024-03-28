@@ -9,13 +9,13 @@ namespace Library.Services.RoleReponsitory
 {
     public class RoleReponsitory : IRoleReponsitory
     {
-        private readonly MyDB context;
+        
         private readonly IClaimService claimService;
         private readonly RoleManager<Role> roleManager;
 
-        public RoleReponsitory(MyDB context,IClaimService claimService,RoleManager<Role> roleManager)
+        public RoleReponsitory(IClaimService claimService,RoleManager<Role> roleManager)
         {
-            this.context = context;
+            
             this.claimService = claimService;
             this.roleManager = roleManager;
         }
@@ -151,17 +151,19 @@ namespace Library.Services.RoleReponsitory
 
         public async Task DeleteRole(string Id)
         {
-            var role = await context.roles.FirstOrDefaultAsync(ro => ro.Id == Id);
+            var role = await roleManager.FindByIdAsync(Id);
+
             if (role != null)
             {
-                context.Remove(role);
-                await context.SaveChangesAsync();
+                var result = await roleManager.DeleteAsync(role);
+
+
             }
         }
 
         public async Task<List<RoleDTO>> GetAll()
         {
-            var role = await context.roles.ToListAsync();
+            var role = await roleManager.Roles.ToListAsync();
             return role.OrderByDescending(x => x.Create_at).Select(e => new RoleDTO
             {
                 Id = e.Id,
@@ -171,20 +173,72 @@ namespace Library.Services.RoleReponsitory
             }).ToList();
         }
 
-        public async Task<RoleDTO> GetById(string Id)
+        public async Task<RoleDetailDTO> GetById(string Id)
         {
-            var role = await context.roles.FirstOrDefaultAsync(x => x.Id == Id);
+            var role =await roleManager.FindByIdAsync(Id);
             if (role == null)
             {
                 return null;
             }
             var existingClaims = await roleManager.GetClaimsAsync(role);
-            return new RoleDTO
+            return new RoleDetailDTO
             {
                 Id = role.Id,
                 Name = role.Name,
                 Description = role.Description,
-                Create_at = role.Create_at
+                Create_at = role.Create_at,
+                claimSubject=new ClaimSubject
+                {
+                    IsView= existingClaims.Any(ex => ex.Type == "subject" && ex.Value == "view"),
+                    IsEdit= existingClaims.Any(ex => ex.Type == "subject" && ex.Value == "edit"),
+                },
+                claimDocument=new ClaimDocument
+                {
+                    IsView= existingClaims.Any(ex => ex.Type == "document" && ex.Value == "view"),
+                    IsEdit = existingClaims.Any(ex => ex.Type == "document" && ex.Value == "edit"),
+                    IsAdd = existingClaims.Any(ex => ex.Type == "document" && ex.Value == "add"),
+                    IsCreate = existingClaims.Any(ex => ex.Type == "document" && ex.Value == "create"),
+                    IsDelete = existingClaims.Any(ex => ex.Type == "document" && ex.Value == "delete"),
+                    IsDownload= existingClaims.Any(ex => ex.Type == "document" && ex.Value == "download"),
+                },
+                claimPrivateFile=new ClaimPrivateFile
+                {
+                    IsView = existingClaims.Any(ex => ex.Type == "private" && ex.Value == "view"),
+                    IsEdit = existingClaims.Any(ex => ex.Type == "private" && ex.Value == "edit"),
+                    IsCreate = existingClaims.Any(ex => ex.Type == "private" && ex.Value == "create"),
+                    IsDelete = existingClaims.Any(ex => ex.Type == "private" && ex.Value == "delete"),
+                    IsDownload = existingClaims.Any(ex => ex.Type == "private" && ex.Value == "download"),
+                },
+                claimExam=new ClaimExam
+                {
+                    IsView = existingClaims.Any(ex => ex.Type == "exam" && ex.Value == "view"),
+                    IsEdit = existingClaims.Any(ex => ex.Type == "exam" && ex.Value == "edit"),
+                    IsCreate = existingClaims.Any(ex => ex.Type == "exam" && ex.Value == "create"),
+                    IsDelete = existingClaims.Any(ex => ex.Type == "exam" && ex.Value == "delete"),
+                    IsDownload = existingClaims.Any(ex => ex.Type == "exam" && ex.Value == "download"),
+                    IsApprove= existingClaims.Any(ex => ex.Type == "exam" && ex.Value == "approve"),
+                },
+                claimNotification=new ClaimNotification
+                {
+                    IsView = existingClaims.Any(ex => ex.Type == "notification" && ex.Value == "view"),
+                    IsEdit = existingClaims.Any(ex => ex.Type == "notification" && ex.Value == "edit"),
+                    IsSystem= existingClaims.Any(ex => ex.Type == "notification" && ex.Value == "system"),
+                    IsDelete = existingClaims.Any(ex => ex.Type == "notification" && ex.Value == "delete")               
+                },
+                claimRole=new ClaimRole
+                {
+                    IsView = existingClaims.Any(ex => ex.Type == "role" && ex.Value == "view"),
+                    IsEdit = existingClaims.Any(ex => ex.Type == "role" && ex.Value == "edit"),
+                    IsDelete = existingClaims.Any(ex => ex.Type == "role" && ex.Value == "delete"),
+                    IsCreate = existingClaims.Any(ex => ex.Type == "role" && ex.Value == "create"),
+                },
+                claimAccount=new ClaimAccount
+                {
+                    IsView = existingClaims.Any(ex => ex.Type == "account" && ex.Value == "view"),
+                    IsEdit = existingClaims.Any(ex => ex.Type == "account" && ex.Value == "edit"),
+                    
+                }
+                
             };
         }
 

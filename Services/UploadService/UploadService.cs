@@ -1,4 +1,5 @@
 ﻿using Library.Services.DocumentRepository;
+using Microsoft.AspNetCore.StaticFiles;
 using System.IO;
 
 namespace Library.Services.UploadService
@@ -74,5 +75,25 @@ namespace Library.Services.UploadService
             double fileSizeInMB = fileSizeInKB / 1024;
             return fileSizeInMB + " MB";
         }
+        public async Task<(byte[], string, string)> DownloadFile(string FileName, string proCode)
+        {
+            try
+            {
+                var _GetFilePath = GetFilePath(proCode,FileName);
+                var provider = new FileExtensionContentTypeProvider();
+                if (!provider.TryGetContentType(_GetFilePath, out var _ContentType))
+                {
+                    _ContentType = "application/octet-stream";
+                }
+                var _ReadAllBytesAsync = await File.ReadAllBytesAsync(_GetFilePath);
+                return (_ReadAllBytesAsync, _ContentType, Path.GetFileName(_GetFilePath));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
     }
 }

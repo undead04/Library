@@ -2,7 +2,6 @@
 {
     public class RanDomExamModel
     {
-        public string Userid { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public int SubjectId { get; set; }
         public int QuatityExam { get; set; }

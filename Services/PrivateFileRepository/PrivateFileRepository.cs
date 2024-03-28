@@ -1,6 +1,7 @@
 ﻿using Library.Data;
 using Library.DTO;
 using Library.Model;
+using Library.Services.JWTService;
 using Library.Services.UploadService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -12,11 +13,12 @@ namespace Library.Services.PrivateFileRepository
     {
         private readonly MyDB context;
         private readonly IUploadService uploadService;
-
-        public PrivateFileRepository(MyDB context,IUploadService uploadService)
+        private readonly IJWTSevice jWTSevice;
+        public PrivateFileRepository(MyDB context,IUploadService uploadService,IJWTSevice jWTSevice)
         {
             this.context = context;
             this.uploadService=uploadService;
+            this.jWTSevice = jWTSevice;
         }
         public async Task DeletePrivateFile(int id)
         {
@@ -79,12 +81,13 @@ namespace Library.Services.PrivateFileRepository
 
         public async Task UploadPrivateFile(PrivateFileModel model)
         {
+            var userId = await jWTSevice.ReadToken();
             foreach(var file in model.Files!) 
             {
                 var privateFile = new PrivateFile
                 {
-                    Create_at=DateTime.Now.Date.ToString(),
-                    CreateUserId=model.CreateUserId
+                    Create_at = DateTime.Now.Date.ToString(),
+                    CreateUserId = userId,
                 };
                 await context.privateFiles.AddAsync(privateFile);
                 await context.SaveChangesAsync();

@@ -15,7 +15,7 @@ namespace Library.Services.JWTService
             _httpContextAccessor = httpContextAccessor;
             this.userManager = userManager;
         }
-        public async Task<ApplicationUser> ReadToken()
+        public async Task<string> ReadToken()
 
         {
             var result = string.Empty;
@@ -26,7 +26,7 @@ namespace Library.Services.JWTService
                 if (result != null)
                 {
                     var user = await userManager.FindByEmailAsync(result);
-                    return user;
+                    return user.Id;
                 }
 
             }

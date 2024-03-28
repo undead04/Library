@@ -80,7 +80,7 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, Role>()
     .AddEntityFrameworkStores<MyDB>().AddDefaultTokenProviders();
 builder.Services.AddDbContext<MyDB>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb"));
@@ -123,7 +123,8 @@ builder.Services.AddScoped<INotificationRepository,NotificationRepository>();
 builder.Services.AddScoped<IMyNotificationRepository, MyNotificationRepository>();
 builder.Services.AddScoped<IHistoryLikeRepository, HistoryLikeRepository>();
 builder.Services.AddScoped<IJWTSevice, JWTService>();
-builder.Services.AddScoped<IClaimService, IClaimService>();
+builder.Services.AddScoped<IClaimService, ClaimService>();
+
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

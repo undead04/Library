@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.Model;
 using Library.DTO;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Library.Controllers
 {
     [Route("api/[controller]")]
@@ -16,6 +18,7 @@ namespace Library.Controllers
             this.repository = repository;
         }
         [HttpPost]
+        [Authorize(Policy ="SubjectView")]
         public async Task<IActionResult> CreateNotification(NoticationSubjectModel model)
         {
             try
@@ -29,6 +32,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("SubjectId/{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> GetAllNotification(int Id,string?search,int? classRoomId)
         {
             try

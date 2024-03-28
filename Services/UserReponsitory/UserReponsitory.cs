@@ -1,8 +1,10 @@
 ﻿using Library.Data;
 using Library.DTO;
 using Library.Model;
+using Library.Services.JWTService;
 using Library.Services.ReissuePassword;
 using Library.Services.SystemNotificationRepository;
+using Library.Services.UploadService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Utilities;
@@ -15,57 +17,31 @@ namespace Library.Services.UserReponsitory
     {
         private readonly MyDB context;
         private UserManager<ApplicationUser> userManager;
-        private readonly ClaimsPrincipal _user;
+        
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly RoleManager<Role> roleManager;
         private readonly IReissuePassword reissuePassword;
         private readonly ISystemNotificationRepository systemNotificationRepository;
+        private readonly IUploadService uploadService;
 
-        public UserReponsitory(MyDB context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, 
-            IReissuePassword reissuePassword,ISystemNotificationRepository systemNotificationRepository)
+        public UserReponsitory(MyDB context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<Role> roleManager, 
+            IReissuePassword reissuePassword,ISystemNotificationRepository systemNotificationRepository,IUploadService uploadService)
         {
             this.context = context;
             this.userManager = userManager;
-            _user = httpContextAccessor.HttpContext!.User;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
             this.reissuePassword = reissuePassword;
             this.systemNotificationRepository = systemNotificationRepository;
+            this.uploadService = uploadService;
 
         }
-        public async Task<UserDTO> GetUser()
-        {
-            var email = _user.FindFirst(ClaimTypes.Email)!.Value;
-            var user = await userManager.FindByEmailAsync(email);
+        
 
-            return new UserDTO
-            {
-                Email = email,
-                UserName = user.UserName,
-                CodeUser = user.UserCode,
-                Sex = user.Sex,
-                Phone = user.PhoneNumber,
-                Address = user.Address,
-                Avatar = user.Avatar == null ? string.Empty : Convert.ToBase64String(user.Avatar),
-            };
-        }
-
-        public async Task UpdateImage(IFormFile Avatar)
+        
+        public async Task ChanglePassWord(ChanglePassWordModel model, string userId)
         {
-            var email = _user.FindFirst(ClaimTypes.Email).Value;
-            var user = await userManager.FindByEmailAsync(email);
-            using (MemoryStream memory = new MemoryStream())
-            {
-                await Avatar.CopyToAsync(memory);
-                byte[] fileBytes = memory.ToArray();
-                user.Avatar = fileBytes;
-                await userManager.UpdateAsync(user);
-            }
-        }
-        public async Task ChanglePassWord(ChanglePassWordModel model)
-        {
-            var email = _user.FindFirst(ClaimTypes.Email)!.Value;
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByIdAsync(userId);
             bool isEqual = model.comformPassword == model.newPassWord;
             if (isEqual)
             {
@@ -74,19 +50,39 @@ namespace Library.Services.UserReponsitory
             }
 
         }
-
-        public async Task DeleteImage()
+        public async Task UpdateImage(IFormFile Avatar, string userId)
         {
-            var user = await userManager.FindByEmailAsync(_user.FindFirst(ClaimTypes.Email)!.Value);
+            var user =await userManager.FindByIdAsync(userId);
+            var nameImage = await uploadService.UploadImage("Avatar", Avatar);
+            user.Avatar = nameImage;
+            await userManager.UpdateAsync(user);
+        }
+        public async Task DeleteImage(string userId)
+        {
+            var user =await userManager.FindByIdAsync(userId);
             if (user.Avatar != null)
             {
-                user.Avatar = null;
+                uploadService.DeleteImage("Avatar", user.Avatar);
+                user.Avatar = string.Empty;
                 await userManager.UpdateAsync(user);
             }
         }
-        public async Task<List<UserDTO>> GetAllUser()
+        public async Task<List<UserDTO>> GetAllUser(string? search, string?roleId)
         {
             var users = await userManager.Users.ToListAsync();
+            if(!string.IsNullOrEmpty(search))
+            {
+                users = users.Where(us => us.UserCode.Contains(search) || us.UserName.Contains(search) || us.Email.Contains(search)).ToList();
+            }
+            if(!string.IsNullOrEmpty(roleId))
+            {
+                var role =await roleManager.FindByIdAsync(roleId);
+                if (role != null)
+                {
+                    var userRole = await userManager.GetUsersInRoleAsync(role.Name!);
+                    users = userRole.ToList();
+                }
+            }
             return users.Select(user => new UserDTO
             {
                 Id = user.Id,
@@ -96,7 +92,9 @@ namespace Library.Services.UserReponsitory
                 Sex = user.Sex,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Avatar = user.Avatar == null ? string.Empty : Convert.ToBase64String(user.Avatar),
+                Avatar=user.Avatar,
+                UrlAvatar=uploadService.GetUrlImage(user.Avatar,"Avatar"),
+                
             }).ToList();
         }
         public async Task DeleteUser(string id)
@@ -145,7 +143,7 @@ namespace Library.Services.UserReponsitory
                 Sex = user.Sex,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Avatar = user.Avatar == null ? string.Empty : Convert.ToBase64String(user.Avatar),
+                Avatar=uploadService.GetUrlImage(user.Avatar,"Avatar"),
             };
         }
         public async Task CreateUser(SingnUpModel model)
@@ -157,7 +155,9 @@ namespace Library.Services.UserReponsitory
                 Sex = model.Sex,
                 UserCode = model.UserCode,
                 Address = model.Address,
-                PhoneNumber=model.Phone
+                PhoneNumber = model.Phone,
+                Avatar = string.Empty
+                
             };
             string password = reissuePassword.CreatPassword();
             var result = await userManager.CreateAsync(user, password);
@@ -249,28 +249,7 @@ namespace Library.Services.UserReponsitory
 
 
         }
-        public async Task<List<UserDTO>> Search(string search, int[] RoleId)
-        {
-            var user = await userManager.Users.ToListAsync();
-            if (!string.IsNullOrEmpty(search))
-            {
-                user = user.Where(us => us.UserCode.Contains(search) || us.Email.Contains(search) || us.UserName.Contains(search)).ToList();
-            }
-            if (RoleId != null)
-            {
-
-            }
-            return user.Select(user => new UserDTO
-            {
-                Id = user.Id,
-                Email = user.Email,
-                UserName = user.UserName,
-                CodeUser = user.UserCode,
-                Sex = user.Sex,
-                Phone = user.PhoneNumber,
-                Address = user.Address,
-            }).ToList();
-        }
+       
         public async Task<List<SubjectDTO>> GetTearcherSubject(string tearcherId)
         {
             var subjects = await context.subjects.ToListAsync();

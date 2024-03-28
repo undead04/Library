@@ -2,6 +2,7 @@
 using Library.DTO;
 using Library.Model;
 using Library.Services.SubjectReponsitory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -18,6 +19,7 @@ namespace Library.Controllers
             this.reponsitory = reponsitory;
         }
         [HttpPost]
+        [Authorize(Policy ="SubjectEdit")]
         public async Task<IActionResult> CreateSubject(SubjectModel model)
         {
             try
@@ -67,6 +69,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> getByIdSubject(int Id)
         {
             try
@@ -85,6 +88,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> GetAllSubject(string? search, int? subjectId, string? orderBy, string? UserId, StatusDocument? statusDocument)
         {
             try

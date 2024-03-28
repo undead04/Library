@@ -27,7 +27,7 @@ namespace Library.Services.ApproveDocumetService
             }
         }
 
-        public async Task Cancel(int id, ApproveCancelDocumentModel model)
+        public async Task Cancel(int id,string userId,string note)
         {
             var document = await context.documents.FirstOrDefaultAsync(doc => doc.Id == id);
             if (document != null)
@@ -36,8 +36,8 @@ namespace Library.Services.ApproveDocumetService
                 {
                     document.Status = StatusDocument.Cancel;
                     document.CreateCancel = DateTime.Now.Date;
-                    document.ApprovedByUserId = model.CancelUser;
-                    document.Note = model.Note;
+                    document.ApprovedByUserId = userId;
+                    document.Note = note;
                     await context.SaveChangesAsync();
                 }
                 

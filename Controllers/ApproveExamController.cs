@@ -1,6 +1,7 @@
 ﻿using Library.DTO;
 using Library.Services.ApproveExamServices;
 using Library.Services.ExamRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace Library.Controllers
             this.examRepository = examRepository;
         }
         [HttpPut("{id}")]
+        [Authorize(Policy = "ExamApprove")]
         public async Task<IActionResult> Approve(int id)
         {
             try
@@ -41,6 +43,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("Cancel/{id}")]
+        [Authorize(Policy = "ExamApprove")]
         public async Task<IActionResult> Cancel(int id)
         {
             try

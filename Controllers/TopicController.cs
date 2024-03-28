@@ -2,6 +2,7 @@
 using Library.Model;
 using Library.Services.SubjectReponsitory;
 using Library.Services.TopicReponsitory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -20,6 +21,7 @@ namespace Library.Controllers
             this.subjectReponsitory=subjectReponsitory;
         }
         [HttpPost]
+        [Authorize(Policy ="SubjectEdit")]
         public async Task<IActionResult> CreateTopic(TopicModel model)
         {
             try
@@ -33,6 +35,7 @@ namespace Library.Controllers
             }
         }
         [HttpDelete("{Id}")]
+        [Authorize(Policy = "SubjectEdit")]
         public async Task<IActionResult> DeleteTopic(int Id)
         {
             try
@@ -51,6 +54,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("{Id}")]
+        [Authorize(Policy = "SubjectEdit")]
         public async Task<IActionResult> UpdateTopic(int Id,TopicModel model)
         {
             try
@@ -69,6 +73,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("Subject/{Id}")]
+        [Authorize(Policy = "SubjectView")]
         public async Task<IActionResult> GetAllTopic(int Id)
         {
             try

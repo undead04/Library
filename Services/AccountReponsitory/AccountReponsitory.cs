@@ -13,9 +13,9 @@ namespace Library.Services.AccountReponsitory
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly RoleManager<Role> roleManager;
 
-        public AccountReponsitory(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+        public AccountReponsitory(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, RoleManager<Role> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -50,15 +50,21 @@ namespace Library.Services.AccountReponsitory
 
             };
             var userRoles = await userManager.GetRolesAsync(user);
+            var roleClaims = await roleManager.FindByIdAsync(model.RoleId);
+            var usersClaims = await roleManager.GetClaimsAsync(roleClaims);
             foreach (var roles in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, roles.ToString()));
+            }
+            foreach(var claims in usersClaims)
+            {
+                authClaims.Add(new Claim(claims.Type,claims.Value));
             }
             var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
             var token = new JwtSecurityToken(
                 issuer: configuration["JWT:ValidIssuer"],
                 audience: configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(50),
+                expires: DateTime.Now.AddDays(7),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256Signature));
             return new JwtSecurityTokenHandler().WriteToken(token);
