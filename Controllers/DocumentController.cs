@@ -1,7 +1,7 @@
 ﻿using Library.Data;
-using Library.DTO;
 using Library.Model;
-using Library.Services.DocumentRepository;
+using Library.Model.DTO;
+using Library.Repository.DocumentRepository;
 using Library.Services.UploadService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

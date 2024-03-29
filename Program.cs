@@ -1,47 +1,46 @@
 ﻿using FluentValidation.AspNetCore;
 using Library.Data;
 using Library.Model;
-using Library.Services.AccountReponsitory;
-using Library.Services.ClassReponsitory;
-using Library.Services.DocumentRepository;
-using Library.Services.LessonReponsitory;
 using Library.Services.MailService;
-using Library.Services.MajorReposntiory;
-using Library.Services.NotificationSubjectRepository;
-using Library.Services.QuestionRepository;
 using Library.Services.ReissuePassword;
-using Library.Services.ReplyQuestionRepository;
-using Library.Services.ResourceReponsitory;
-using Library.Services.RoleReponsitory;
-using Library.Services.SubjectReponsitory;
-using Library.Services.TopicReponsitory;
-using Library.Services.UserReponsitory;
 using Library.Services.UploadService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SchoolLibrary.Validation;
 using System.Text;
-using Library.Services.ClassLessonRepository;
-using Library.Services.MultipleChoiceRepository;
-using Library.Services.ExamRepository;
-using Library.Services.HelpRepository;
-using Library.Services.MySubjectService;
 using Library.Services.ApproveDocumetService;
-using Library.Services.PrivateFileRepository;
 using Library.Services.ApproveExamServices;
 using Library.Services.ExcelService;
-using Microsoft.AspNetCore.WebSockets;
-using Library.Services.SystemNotificationRepository;
-using Library.Services.NotificationRepository;
-using Library.Services.MyNotificationRepository;
-using Library.Services.HistoryLikeRepository;
 using Library.Services.JWTService;
 using Library.Services.ClaimsService;
+using Library.Services.NotificationService;
+using Library.Repository.AccountReponsitory;
+using Library.Repository.ClassLessonRepository;
+using Library.Repository.ClassReponsitory;
+using Library.Repository.DocumentRepository;
+using Library.Repository.ExamRepository;
+using Library.Repository.HistoryLikeRepository;
+using Library.Repository.LessonReponsitory;
+using Library.Repository.MultipleChoiceRepository;
+using Library.Repository.MajorReposntiory;
+using Library.Repository.MyNotificationRepository;
+using Library.Repository.HelpRepository;
+using Library.Repository.NotificationRepository;
+using Library.Repository.NotificationSubjectRepository;
+using Library.Repository.UserReponsitory;
+using Library.Repository.PrivateFileRepository;
+using Library.Repository.TopicReponsitory;
+using Library.Repository.SystemNotificationRepository;
+using Library.Repository.SubjectReponsitory;
+using Library.Repository.RoleReponsitory;
+using Library.Repository.ReplyQuestionRepository;
+using Library.Repository.ResourceReponsitory;
+using Library.Repository.QuestionSubjectRepository;
+using Library.Repository.SystemRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,7 +112,6 @@ builder.Services.AddScoped<IClassLessonRepository, ClassLessonRepository>();
 builder.Services.AddScoped<IMultipleChoiceRepository, MultipleChoiceRepository>();
 builder.Services.AddScoped<IExamRepository, ExamRepository>();
 builder.Services.AddScoped<IHelpRepository, HelpRepository>();
-builder.Services.AddScoped<IMySubjectService, MySubjectService>();
 builder.Services.AddScoped<IApproveDocumetService, ApproveDocumentService>();
 builder.Services.AddScoped<IPrivateFileRepository, PrivateFileRepository>();
 builder.Services.AddScoped<IApporveExamServices, ApproveExamService>();
@@ -124,7 +122,8 @@ builder.Services.AddScoped<IMyNotificationRepository, MyNotificationRepository>(
 builder.Services.AddScoped<IHistoryLikeRepository, HistoryLikeRepository>();
 builder.Services.AddScoped<IJWTSevice, JWTService>();
 builder.Services.AddScoped<IClaimService, ClaimService>();
-
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ISystemRepository, SystemRepository>();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -171,12 +170,12 @@ var policyConfigurations = new List<PolicyConfiguration>
             new PolicyConfiguration { PolicyName = "NotificationSystem", ClaimType = "notification", ClaimValue = "system" },
             new PolicyConfiguration { PolicyName = "NotificationEdit", ClaimType = "notification", ClaimValue = "edit" },
             new PolicyConfiguration { PolicyName = "NotificationDelete", ClaimType = "notification", ClaimValue = "delete" },
-            new PolicyConfiguration { PolicyName = "RoleCreate", ClaimType = "role", ClaimValue = "create" },
-            new PolicyConfiguration { PolicyName = "RoleView", ClaimType = "role", ClaimValue = "view" },
-            new PolicyConfiguration { PolicyName = "RoleEdit", ClaimType = "role", ClaimValue = "edit" },
-            new PolicyConfiguration { PolicyName = "RoleDelete", ClaimType = "role", ClaimValue = "delete" },
             new PolicyConfiguration { PolicyName = "AccountView", ClaimType = "Account", ClaimValue = "view" },
             new PolicyConfiguration { PolicyName = "AccountEdit", ClaimType = "Account", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "RoleCreate", ClaimType = "roless", ClaimValue = "create" },
+            new PolicyConfiguration { PolicyName = "RoleView", ClaimType = "roless", ClaimValue = "view" },
+            new PolicyConfiguration { PolicyName = "RoleEdit", ClaimType = "roless", ClaimValue = "edit" },
+            new PolicyConfiguration { PolicyName = "RoleDelete", ClaimType = "roless", ClaimValue = "delete" },
             // Add more policy configurations as needed
         };
 

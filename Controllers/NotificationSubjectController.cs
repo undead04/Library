@@ -1,9 +1,10 @@
-﻿using Library.Services.NotificationSubjectRepository;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Library.Model;
-using Library.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Library.Services.JWTService;
+using Library.Model.DTO;
+using Library.Repository.NotificationSubjectRepository;
 
 namespace Library.Controllers
 {
@@ -12,10 +13,12 @@ namespace Library.Controllers
     public class NotificationSubjectController : ControllerBase
     {
         private readonly INotificationSubjectRepository repository;
+        private readonly IJWTSevice jWTSevice;
 
-        public NotificationSubjectController(INotificationSubjectRepository repository) 
+        public NotificationSubjectController(INotificationSubjectRepository repository,IJWTSevice jWTSevice) 
         {
             this.repository = repository;
+            this.jWTSevice = jWTSevice;
         }
         [HttpPost]
         [Authorize(Policy ="SubjectView")]
@@ -23,7 +26,8 @@ namespace Library.Controllers
         {
             try
             {
-                await repository.CreatenotificationSubject(model);
+                var userId = await jWTSevice.ReadToken();
+                await repository.CreatenotificationSubject(model,userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Tạo thành công", 200));
             }
             catch

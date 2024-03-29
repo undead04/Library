@@ -447,11 +447,17 @@ namespace Library.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("TypeNotification")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("notifications");
                 });
@@ -809,6 +815,59 @@ namespace Library.Migrations
                     b.HasIndex("TearcherUserId");
 
                     b.ToTable("subjectClassRooms");
+                });
+
+            modelBuilder.Entity("Library.Data.System", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CodeSchool")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameSchool")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameSystemLibrary")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Principal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeSchool")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Website")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("systems");
                 });
 
             modelBuilder.Entity("Library.Data.SystemNotification", b =>
@@ -1241,6 +1300,17 @@ namespace Library.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Library.Data.Notification", b =>
+                {
+                    b.HasOne("Library.Data.ApplicationUser", "applicationUser")
+                        .WithMany("notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("applicationUser");
+                });
+
             modelBuilder.Entity("Library.Data.NotificationClassRoom", b =>
                 {
                     b.HasOne("Library.Data.ClassRoom", "ClassRoom")
@@ -1584,6 +1654,8 @@ namespace Library.Migrations
                     b.Navigation("myNotifications");
 
                     b.Navigation("notificationSubjects");
+
+                    b.Navigation("notifications");
 
                     b.Navigation("privateFiles");
 

@@ -22,6 +22,7 @@ namespace Library.Data
         public ICollection<HistoryLike>? HistoryLikes { get; set; }
         public virtual SystemNotification? systemNotifications { get; set; }
         public ICollection<MyNotification>? myNotifications { get; set; }
+        public ICollection<Notification>? notifications { get; set; }
 
        
     }

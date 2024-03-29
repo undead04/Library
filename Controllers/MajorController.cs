@@ -1,6 +1,6 @@
-﻿using Library.DTO;
-using Library.Model;
-using Library.Services.MajorReposntiory;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.MajorReposntiory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

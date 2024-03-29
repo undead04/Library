@@ -1,10 +1,10 @@
 ﻿using Library.Model;
-using Library.Services.ReplyQuestionRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
-using Library.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Library.Model.DTO;
+using Library.Repository.ReplyQuestionRepository;
 
 namespace Library.Controllers
 {

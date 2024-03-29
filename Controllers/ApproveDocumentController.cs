@@ -1,7 +1,7 @@
-﻿using Library.DTO;
-using Library.Model;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.DocumentRepository;
 using Library.Services.ApproveDocumetService;
-using Library.Services.DocumentRepository;
 using Library.Services.JWTService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

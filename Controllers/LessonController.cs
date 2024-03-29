@@ -1,6 +1,8 @@
-﻿using Library.DTO;
-using Library.Model;
-using Library.Services.LessonReponsitory;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.ClassLessonRepository;
+using Library.Repository.LessonReponsitory;
+using Library.Repository.ResourceReponsitory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
@@ -12,10 +14,14 @@ namespace Library.Controllers
     public class LessonController : ControllerBase
     {
         private readonly ILessonReponsitory reponsitory;
+        private readonly IResourceReponsitory resourceReponsitory;
+        private readonly IClassLessonRepository classLessonRepository;
 
-        public LessonController(ILessonReponsitory reponsitory)
+        public LessonController(ILessonReponsitory reponsitory,IResourceReponsitory resourceReponsitory,IClassLessonRepository classLessonRepository)
         {
             this.reponsitory = reponsitory;
+            this.resourceReponsitory=resourceReponsitory;
+            this.classLessonRepository = classLessonRepository;
         }
         [HttpPost]
         [Authorize(Policy ="DocumentCreate")]
@@ -101,5 +107,46 @@ namespace Library.Controllers
                 return BadRequest();
             }
         }
+        [HttpPost("CreateAllLesson")]
+        [Authorize(Policy = "DocumentCreate")]
+        public async Task<IActionResult> CreateAllLesson([FromForm]CreateAllLesson model)
+        {
+            try
+            {
+                var lessonModel = new LessonModel
+                {
+                    SubjectId=model.SubjectId,
+                    Title=model.Title,
+                    TopicId=model.TopicId,
+                    File=model.Lesson,
+                };
+                var lessonId =await reponsitory.CreateLesson(lessonModel);
+                var resourceModel = new ResourceModel
+                {
+                    LessonId=lessonId,
+                    SubjectId=model.SubjectId,
+                    File = model.Resource,
+                };
+                await resourceReponsitory.CreateResource(resourceModel);
+                if(model.ClassId.Count()>0)
+                {
+                    int[] ArrayLessonId = new int[1];
+                    ArrayLessonId[0] = lessonId;
+
+                    var assignModel = new AssignDocumentModel
+                    {
+                        ClassId = model.ClassId,
+                        LessonId = ArrayLessonId
+                    };
+                    await classLessonRepository.AssignDocuments(assignModel);
+                }
+                return Ok(BaseReponsitory<string>.WithMessage("Thêm bài giảng thành công", 200));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
     }
 }

@@ -36,6 +36,7 @@ namespace Library.Data
         public DbSet<SystemNotification> systemNotifications { get; set; }
         public DbSet<Notification> notifications { get; set; }
         public DbSet<MyNotification> myNotifications { get; set; }
+        public DbSet<System> systems { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -84,6 +85,10 @@ namespace Library.Data
                 e.HasOne(e=>e.systemNotifications)
                 .WithOne(e=>e.User)
                 .HasForeignKey<SystemNotification>(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+                e.HasMany(x => x.notifications)
+                .WithOne(e => e.applicationUser)
+                .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
             });
             builder.Entity<Major>(e =>

@@ -1,6 +1,6 @@
-﻿using Library.DTO;
-using Library.Model;
-using Library.Services.RoleReponsitory;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.RoleReponsitory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +18,7 @@ namespace Library.Controllers
             this.roleReponsitory=roleReponsitory;
         }
         [HttpPost]
-        
+        [Authorize(Policy = "RoleCreate")]
         public async Task<IActionResult> CreateRole(RoleModel model)
         {
             try
@@ -33,11 +33,11 @@ namespace Library.Controllers
         }
         [HttpGet]
         
-        public async Task<IActionResult> getAlll()
+        public async Task<IActionResult> getAlll(string? search)
         {
             try
             {
-                var role=await roleReponsitory.GetAll();
+                var role=await roleReponsitory.GetAll(search);
                 return Ok(BaseReponsitory<List<RoleDTO>>.WithData(role, 200));
             }
             catch
@@ -46,7 +46,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
-       
+        [Authorize(Policy = "RoleView")]
         public async Task<IActionResult> getById(string Id)
         {
             try
@@ -64,7 +64,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("{Id}")]
-        
+        [Authorize(Policy = "RoleEdit")]
         public async Task<IActionResult> UpdateRole(string Id,RoleModel model)
         {
             try
@@ -83,7 +83,7 @@ namespace Library.Controllers
             }
         }
         [HttpDelete("{Id}")]
-        
+        [Authorize(Policy = "RoleDelete")]
         public async Task<IActionResult> DeleteRole(string Id)
         {
             try

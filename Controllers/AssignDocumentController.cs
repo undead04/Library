@@ -1,7 +1,7 @@
-﻿using Library.DTO;
-using Library.Model;
-using Library.Services.ClassLessonRepository;
-
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.ClassLessonRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Controllers
@@ -17,6 +17,7 @@ namespace Library.Controllers
             this.repository=repository;
         }
         [HttpPost]
+        [Authorize(Policy ="DocumentAdd")]
         public async Task<IActionResult> CreateAssignDocument(AssignDocumentModel model)
         {
             try

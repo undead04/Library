@@ -20,6 +20,7 @@
         public bool IscrudQuestion { get; set; } = false;
         public bool IscrudLesson { get; set; } = false;
         public bool IscrudResource { get; set; } = false;
-        public bool IscrudDocument { get; set; } = false;
+        public bool iscrudDocument { get; set; }= false;    
+        
     }
 }

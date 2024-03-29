@@ -1,7 +1,7 @@
 ﻿using Library.Data;
-using Library.DTO;
 using Library.Model;
-using Library.Services.AccountReponsitory;
+using Library.Model.DTO;
+using Library.Repository.AccountReponsitory;
 using Microsoft.AspNetCore.Mvc;
 
 

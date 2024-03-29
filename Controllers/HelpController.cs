@@ -1,6 +1,6 @@
-﻿using Library.DTO;
-using Library.Model;
-using Library.Services.HelpRepository;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.HelpRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

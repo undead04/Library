@@ -1,10 +1,11 @@
 ﻿using FluentValidation.Results;
-using Library.DTO;
 using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.RoleReponsitory;
+using Library.Repository.UserReponsitory;
 using Library.Services.JWTService;
-using Library.Services.RoleReponsitory;
+using Library.Services.NotificationService;
 using Library.Services.UploadService;
-using Library.Services.UserReponsitory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolLibrary.Validation;
@@ -20,8 +21,11 @@ namespace Library.Controllers
         private readonly IJWTSevice jwtService;
         private readonly IUploadService uploadservice;
         private readonly IRoleReponsitory roleRepository;
+        private readonly INotificationService notificationService;
 
-        public UserController(IUserReponsitory userReponsitory, ChanglePassWordValidation validation,IJWTSevice jWTSevice,IUploadService uploadService,IRoleReponsitory roleReponsitory)
+        public UserController(IUserReponsitory userReponsitory, ChanglePassWordValidation validation,IJWTSevice jWTSevice,IUploadService uploadService,IRoleReponsitory roleReponsitory
+           ,INotificationService notificationService)
+            
         {
 
             this.userReponsitory = userReponsitory;
@@ -29,9 +33,13 @@ namespace Library.Controllers
             this.jwtService = jWTSevice;
             this.uploadservice = uploadService;
             this.roleRepository = roleReponsitory;
+
+            this.notificationService = notificationService;
+
+
         }
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "AccountView")]
         public async Task<IActionResult> GetUser()
         {
             try
@@ -46,7 +54,8 @@ namespace Library.Controllers
             }
         }
         [HttpPost("ChanglePassword")]
-        [Authorize]
+      
+        [Authorize(Policy = "AccountEdit")]
         public async Task<IActionResult> ChanglePassword(ChanglePassWordModel model)
         {
             try
@@ -59,6 +68,10 @@ namespace Library.Controllers
                 }
                 var userId = await jwtService.ReadToken();
                 await userReponsitory.ChanglePassWord(model,userId);
+                
+                var user =await userReponsitory.GetUserById(userId);
+                List<string> listUserId=new List<string> { userId };
+                await notificationService.CreateNotification(TypeNotification.IsChangePassword, $"{user.UserName} cập nhập mật khẩu  thành công", listUserId, userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Đổi mật khẩu thành công", 200));
             }
             catch
@@ -67,13 +80,17 @@ namespace Library.Controllers
             }
         }
         [HttpPost("UpdateAvatar")]
-        [Authorize]
+        
+        [Authorize(Policy = "AccountEdit")]
         public async Task<IActionResult> UpdateAvatar(IFormFile Avatar)
         {
             try
             {
                 var userId=await jwtService.ReadToken();
                 await userReponsitory.UpdateImage(Avatar, userId);
+                var user = await userReponsitory.GetUserById(userId);
+                List<string> listUserId = new List<string> { userId };
+                await notificationService.CreateNotification(TypeNotification.IsUpdateInformationUser, $"{user.UserName} cập nhập ảnh đại diện thành công", listUserId, userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Đổi  ảnh đại diện thành công", 200));
             }
             catch
@@ -82,13 +99,17 @@ namespace Library.Controllers
             }
         }
         [HttpPost("DeleteAvatar")]
-        [Authorize]
+        
+        [Authorize(Policy = "AccountEdit")]
         public async Task<IActionResult> DeleteAvatr()
         {
             try
             {
                 var userId= await jwtService.ReadToken();
                 await userReponsitory.DeleteImage(userId);
+                var user = await userReponsitory.GetUserById(userId);
+                List<string> listUserId = new List<string> { userId };
+                await notificationService.CreateNotification(TypeNotification.IsUpdateInformationUser, $"{user.UserName} xóa ảnh đại diện thành công", listUserId, userId);
                 return Ok(BaseReponsitory<string>.WithMessage("Xóa ảnh đại diện thành công", 200));
             }
             catch
@@ -97,6 +118,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("All")]
+        [Authorize(Policy = "AccountView")]
         public async Task<IActionResult> GetAllUser(string? search,string?roleId)
         {
             try
@@ -118,6 +140,7 @@ namespace Library.Controllers
             }
         }
         [HttpGet("{Id}")]
+        [Authorize(Policy = "AccountView")]
         public async Task<IActionResult> GetByIdlUser(string Id)
         {
             try
@@ -149,6 +172,7 @@ namespace Library.Controllers
             }
         }
         [HttpPut("{Id}")]
+        [Authorize(Policy = "AccountEdit")]
         public async Task<IActionResult> UpdateUser(string Id, SingnUpModel model)
         {
             try
@@ -167,6 +191,7 @@ namespace Library.Controllers
             }
         }
         [HttpPost]
+        [Authorize(Policy = "AccountEdit")]
         public async Task<IActionResult> CreateUser(SingnUpModel model)
         {
             try
@@ -174,19 +199,6 @@ namespace Library.Controllers
 
                 await userReponsitory.CreateUser(model);
                 return Ok(BaseReponsitory<string>.WithMessage("Thêm người dùng thành công", 200));
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        [HttpGet("tearchSubject/{Id}")]
-        public async Task<IActionResult> GetAllTearcherSubject(string Id)
-        {
-            try
-            {
-                var subjects= await userReponsitory.GetTearcherSubject(Id);
-                return Ok(BaseReponsitory<List<SubjectDTO>>.WithData(subjects, 200));
             }
             catch
             {

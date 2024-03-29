@@ -1,6 +1,6 @@
-﻿using Library.DTO;
+﻿using Library.Model.DTO;
+using Library.Repository.ExamRepository;
 using Library.Services.ApproveExamServices;
-using Library.Services.ExamRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

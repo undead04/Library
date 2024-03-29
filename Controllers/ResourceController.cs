@@ -1,9 +1,9 @@
 ﻿using Library.Model;
-using Library.Services.ResourceReponsitory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Library.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Library.Model.DTO;
+using Library.Repository.ResourceReponsitory;
 
 namespace Library.Controllers
 {

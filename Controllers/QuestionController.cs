@@ -1,8 +1,8 @@
-﻿using Library.DTO;
-using Library.Model;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.MultipleChoiceRepository;
 using Library.Services.ExcelService;
 using Library.Services.JWTService;
-using Library.Services.MultipleChoiceRepository;
 using Library.Services.UploadService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

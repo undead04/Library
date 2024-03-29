@@ -1,7 +1,8 @@
-﻿using Library.Data;
-using Library.DTO;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Library.Data;
 using Library.Model;
-using Library.Services.ExamRepository;
+using Library.Model.DTO;
+using Library.Repository.ExamRepository;
 using Library.Services.UploadService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,11 +16,14 @@ namespace Library.Controllers
     {
         private readonly IExamRepository repository;
         private readonly IUploadService uploadService;
+       
 
-        public ExamController(IExamRepository repository,IUploadService uploadService) 
+        public ExamController(IExamRepository repository,IUploadService uploadService)
+            
         { 
             this.repository=repository;
             this.uploadService = uploadService;
+            
         }
         [HttpPost("Multiple")]
         [Authorize(Policy ="ExamCreate")]
@@ -28,6 +32,7 @@ namespace Library.Controllers
             try
             {
                 await repository.CreateExamMultipleChoice(model);
+                
                 return Ok(BaseReponsitory<string>.WithMessage("Tạo thành công",200));
             }
             catch

@@ -1,7 +1,7 @@
-﻿using Library.DTO;
-using Library.Model;
-using Library.Services.SubjectReponsitory;
-using Library.Services.TopicReponsitory;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.SubjectReponsitory;
+using Library.Repository.TopicReponsitory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

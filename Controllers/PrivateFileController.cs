@@ -1,10 +1,10 @@
 ﻿using Library.Model;
-using Library.Services.PrivateFileRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Library.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Library.Services.UploadService;
+using Library.Model.DTO;
+using Library.Repository.PrivateFileRepository;
 
 namespace Library.Controllers
 {

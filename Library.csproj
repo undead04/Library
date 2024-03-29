@@ -26,6 +26,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\Uploads\Avatar\" />
     <Folder Include="wwwroot\Uploads\Exam\" />
+    <Folder Include="wwwroot\Uploads\Logo\" />
     <Folder Include="wwwroot\Uploads\Question\" />
     <Folder Include="wwwroot\Uploads\PrivateFile\" />
   </ItemGroup>

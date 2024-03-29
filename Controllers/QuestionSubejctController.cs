@@ -1,7 +1,7 @@
-﻿using Library.DTO;
-using Library.Model;
-using Library.Services.HistoryLikeRepository;
-using Library.Services.QuestionRepository;
+﻿using Library.Model;
+using Library.Model.DTO;
+using Library.Repository.HistoryLikeRepository;
+using Library.Repository.QuestionSubjectRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +59,7 @@ namespace Library.Controllers
                 {
                     return NotFound();
                 }
-                
+                await questionSubjectRepository.LikeQuestion(Id);
                 return Ok(BaseReponsitory<string>.WithMessage("Thích thành công", 200));
             }
             catch
